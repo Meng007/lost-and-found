@@ -7,6 +7,7 @@ import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
 import com.mds.my.platform.lostandfound.project.system.service.SensitiveWordService;
 import com.mds.my.platform.lostandfound.project.system.service.SysGoodsService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,4 +53,31 @@ public class GoodsController {
         return sysGoodsService.getGoodsList(params);
     }
 
+    /**
+     *  我的物品列表
+     * @param params
+     * @param id
+     * @return
+     */
+    @GetMapping("/my-list/{id}")
+    public PageResult myGoods(@RequestParam Map params ,@PathVariable Integer id){
+        params.put("userId",id);
+        return sysGoodsService.getGoodsListByUserId(params);
+    }
+
+    /**
+     * 物品编辑
+     */
+    @PutMapping("/update")
+    public Result update(@RequestBody GoodsDTO goodsDTO){
+        return sysGoodsService.updateGoods(goodsDTO);
+    }
+
+    /**
+     *  物品删除
+     */
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Integer id ){
+        return sysGoodsService.removeGoods(id);
+    }
 }

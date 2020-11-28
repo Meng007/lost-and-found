@@ -1,6 +1,7 @@
 package com.mds.my.platform.lostandfound.project.system.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
@@ -11,13 +12,14 @@ import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO;
 import com.mds.my.platform.lostandfound.project.system.service.SensitiveWordService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import com.mds.my.platform.lostandfound.common.enums.ResultCode;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysGoodsMapper;
@@ -37,6 +39,7 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
     private TokenService tokenService;
     @Autowired
     private SysGoodsMapper sysGoodsMapper;
+    private static final String USER_ID = "userId";
 
     @Override
     @Transactional
@@ -76,6 +79,59 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
         List<GoodsVO> gs = sysGoodsMapper.findAll(params);
         PageInfo<GoodsVO> pageInfo = new PageInfo(gs);
         return PageResult.<GoodsVO>builder().data(gs).total(pageInfo.getTotal()).msg("获取物品列表成功！").build();
+    }
+
+    /**
+     * 我的物品列表
+     * @param params
+     * @return
+     */
+    @Override
+    public PageResult getGoodsListByUserId(Map params) {
+        if (StringUtils.isEmpty((String)params.get(USER_ID))){
+            return PageResult.builder().code(ResultCode.NO_ID.getCode()).msg("id不能为空！").data(null).build();
+        }
+        List<GoodsVO> vo =  sysGoodsMapper.getMyGoodsList(params);
+        return PageResult.<GoodsVO>builder().msg("获取的的物品列表成功！").data(vo).build();
+    }
+
+    /**
+     * 修改物品信息
+     * @param goodsDTO
+     * @return
+     */
+    @Override
+    public Result updateGoods(GoodsDTO goodsDTO) {
+        if (Objects.isNull(goodsDTO)){
+            return Result.fail("提交数据不能为空！");
+        }
+        if (!Objects.isNull(goodsDTO.getImages()) && !goodsDTO.getImages().isEmpty()){
+            //修改图片
+            sysGoodsMapper.deleteImage(goodsDTO.getId());
+            sysGoodsMapper.saveImages(goodsDTO);
+        }
+        //SysGoods g = new SysGoods();
+        //BeanUtils.copyProperties(goodsDTO,g);
+        LambdaQueryWrapper<SysGoods> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(SysGoods::getId,goodsDTO.getId());
+        int i = sysGoodsMapper.update(goodsDTO,lqw);
+        if (i>0){
+            return Result.success("修改成功！");
+        }
+        return Result.fail("修改失败！");
+    }
+
+    @Override
+    public Result removeGoods(Integer id) {
+        SysGoods goods = sysGoodsMapper.selectById(id);
+        if (Objects.isNull(goods)){
+            return Result.fail("物品不存在，删除失败！");
+        }
+        int i = sysGoodsMapper.deleteById(id);
+        if (i>0){
+            return Result.success("删除成功！");
+        }
+        return Result.fail("删除失败!");
     }
 
     /**

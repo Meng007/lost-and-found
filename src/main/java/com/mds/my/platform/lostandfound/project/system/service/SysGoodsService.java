@@ -26,4 +26,25 @@ public interface SysGoodsService extends IService<SysGoods>{
      * @return
      */
     PageResult getGoodsList(Map params);
+
+    /**
+     *  我的物品列表
+     * @param params
+     * @return
+     */
+    PageResult getGoodsListByUserId(Map params);
+
+    /**
+     *  修改物品信息
+     * @param goodsDTO
+     * @return
+     */
+    Result updateGoods(GoodsDTO goodsDTO);
+
+    /**
+     *  删除物品
+     * @param id
+     * @return
+     */
+    Result removeGoods(Integer id);
 }

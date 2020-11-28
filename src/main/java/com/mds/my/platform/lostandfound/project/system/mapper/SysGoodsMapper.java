@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysGoods;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +29,18 @@ public interface SysGoodsMapper extends BaseMapper<SysGoods> {
      * @return
      */
     List<GoodsVO> findAll(Map params);
+
+    /**
+     *  我的物品列表
+     * @param params
+     * @return
+     */
+    List<GoodsVO> getMyGoodsList(Map params);
+
+    /**
+     *  删除图片
+     * @param id
+     */
+    @Delete("delete from sys_goods_image where goods_id = #{id}")
+    void deleteImage(@Param("id") Integer id);
 }

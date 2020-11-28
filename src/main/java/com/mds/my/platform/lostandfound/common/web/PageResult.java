@@ -10,5 +10,6 @@ import java.util.List;
 public class PageResult<T> {
     private Long total;
     private String msg;
+    private Integer code;
     private List<T> data;
 }
