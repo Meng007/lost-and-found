@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.SysMenu">
+    <!--@mbg.generated-->
+    <!--@Table sys_menu-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="component" jdbcType="VARCHAR" property="component" />
+    <result column="is_frame" jdbcType="BOOLEAN" property="isFrame" />
+    <result column="menu_type" jdbcType="BOOLEAN" property="menuType" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="usereId" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="visible" jdbcType="BOOLEAN" property="visible" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, menu_name, pid, `order`, `path`, component, is_frame, menu_type, perms, create_time, 
+    update_time, user_id, icon, visible, `status`
+  </sql>
+    <select id="selectMenuMapperPermsByUserId" resultType="java.lang.String">
+        select sm.perms
+        from sys_menu sm
+        left join sys_role_menu srm on srm.menu_id = sm.id
+        left join sys_role sr on sr.id = srm.role_id
+        left join sys_user_role sur on sur.role_id = sr.id
+        WHERE sur.user_id = #{id}
+    </select>
+
+    <select id="selectMenuTreeByUserId">
+        SELECT distinct sm.id,sm.menu_name,sm.pid,sm.order,sm.path,sm.component,sm.is_frame,sm.menu_type,
+      sm.icon,sm.visible,sm.status
+        FROM sys_menu sm
+        left join sys_role_menu srm on sm.id = srm.menu_id
+        left join sys_role sr on sr.id = srm.role_id
+        left join sys_user_role sur on sur.role_id = sr.id
+        where sur.user_id = #{id}
+    </select>
+</mapper>

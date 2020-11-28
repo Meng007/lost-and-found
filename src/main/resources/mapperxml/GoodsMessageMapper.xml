@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.GoodsMessageMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.GoodsMessage">
+    <!--@mbg.generated-->
+    <!--@Table goods_message-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="message_id" jdbcType="INTEGER" property="messageId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="agree" jdbcType="INTEGER" property="agree" />
+    <result column="message_content" jdbcType="VARCHAR" property="messageContent" />
+    <result column="is_delete" jdbcType="BOOLEAN" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, message_id, user_id, create_time, goods_id, `status`, agree, message_content, 
+    is_delete
+  </sql>
+</mapper>

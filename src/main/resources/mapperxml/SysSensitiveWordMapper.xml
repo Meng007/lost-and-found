@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.SysSensitiveWordMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.SysSensitiveWord">
+    <!--@mbg.generated-->
+    <!--@Table sys_sensitive_word-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sensitive_type" jdbcType="INTEGER" property="sensitiveType" />
+    <result column="sensitive_words" jdbcType="VARCHAR" property="sensitiveWords" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="sensitiveTopic" jdbcType="VARCHAR" property="sensitivetopic" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, sensitive_type, sensitive_words, `status`, create_user, create_time, update_user, 
+    update_time, sensitiveTopic
+  </sql>
+</mapper>

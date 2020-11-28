@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.SysRole">
+    <!--@mbg.generated-->
+    <!--@Table sys_role-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_key" jdbcType="VARCHAR" property="roleKey" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="is_delete" jdbcType="BOOLEAN" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, role_name, role_key, sort, `status`, is_delete
+  </sql>
+  <select id="selectRolePermissionByUserId" resultType="com.mds.my.platform.lostandfound.project.system.domain.entity.SysRole">
+    select distinct sr.id,sr.role_key,sr.role_name,sr.sort,sr.status
+    from sys_role sr
+    left join sys_user_role sur on sur.role_id = sr.id
+    left join sys_user su on su.id = sur.user_id
+    where sr.status = 0 and su.id = #{id}
+  </select>
+</mapper>
