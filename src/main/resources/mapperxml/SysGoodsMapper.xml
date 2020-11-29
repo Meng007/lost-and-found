@@ -45,7 +45,7 @@
     SELECT sg.id,sg.goods_name,sg.cover_image,
     sg.topping,sg.goods_title,sg.goods_type,sg.create_time,
     ifnull(sg.message_num,0) as messageNum,ifnull(sg.views,0) as views,
-    sg.`status`,su.avatar,su.nick_name,sdd.dict_label,sg.user_id
+    sg.`status`,su.avatar,su.nick_name,sdd.dict_label,sg.user_id,sg.goods_status
     FROM sys_goods sg
     LEFT JOIN sys_dict_data sdd on sdd.id = sg.goods_type
     left JOIN sys_user su on sg.user_id = su.id
