@@ -87,7 +87,16 @@
   <select id="getGoodsInfo" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO">
     select
     <include refid="Base_Column_List"/>
-    from
+    from sys_goods where id = #{id}
+  </select>
+  <!--货物物品图片-->
+  <select id="getImages" resultType="com.mds.my.platform.lostandfound.project.system.domain.entity.SysGoodsImage">
+    select * from sys_goods_image where goods_id = #{id}
   </select>
 
+  <!--获取物品详情-->
+  <select id="getGoodsInfo1" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO">
+    select sg.id,sg.
+      from sys_goods sg
+  </select>
 </mapper>

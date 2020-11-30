@@ -88,4 +88,12 @@ public class GoodsController {
     public Result echo(@PathVariable Integer id){
         return sysGoodsService.echo(id);
     }
+
+    /**
+     * 物品详情
+     */
+    @GetMapping("/info/{id}")
+    public Result info(@PathVariable Integer id){
+        return sysGoodsService.getInfo(id);
+    }
 }

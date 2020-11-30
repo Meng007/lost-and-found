@@ -9,6 +9,7 @@ import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
+import com.mds.my.platform.lostandfound.project.system.domain.entity.SysGoodsImage;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO;
 import com.mds.my.platform.lostandfound.project.system.service.SensitiveWordService;
 import org.apache.commons.lang3.StringUtils;
@@ -137,7 +138,23 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
     @Override
     public Result echo(Integer id) {
         GoodsVO vo = sysGoodsMapper.getGoodsInfo(id);
-        return null;
+        if (Objects.isNull(vo)){
+            return Result.fail("数据不存在！");
+        }
+        List<SysGoodsImage> images = sysGoodsMapper.getImages(vo.getId());
+        vo.setImages(images);
+        return Result.success("数据回显成功！",vo);
+    }
+
+    @Override
+    public Result getInfo(Integer id) {
+        GoodsVO vo = sysGoodsMapper.getGoodsInfo1(id);
+        if (Objects.isNull(vo)){
+            return Result.fail("物品数据不存在！");
+        }
+        List<SysGoodsImage> images = sysGoodsMapper.getImages(vo.getId());
+        vo.setImages(images);
+        return Result.success("货物物品详情成功！",vo);
     }
 
     /**

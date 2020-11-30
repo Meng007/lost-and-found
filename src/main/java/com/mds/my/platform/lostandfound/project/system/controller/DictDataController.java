@@ -51,7 +51,6 @@ public class DictDataController {
     /**
      *  根据字典类型获取字典数据
      */
-
     @GetMapping("/{type}/list")
     public Result list(@PathVariable Integer type){
         return sysDictDataService.getDictDataByType(type);

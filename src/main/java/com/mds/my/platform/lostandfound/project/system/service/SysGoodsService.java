@@ -54,4 +54,6 @@ public interface SysGoodsService extends IService<SysGoods>{
      * @return
      */
     Result echo(Integer id);
+
+    Result getInfo(Integer id);
 }
