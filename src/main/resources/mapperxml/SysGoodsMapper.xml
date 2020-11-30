@@ -96,7 +96,11 @@
 
   <!--获取物品详情-->
   <select id="getGoodsInfo1" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO">
-    select sg.id,sg.
-      from sys_goods sg
+    select sg.id,sg.goods_name,sg.goods_title,sg.goods_content,
+           sg.create_time,sg.lost_time,sg.cover_image,sg.goods_type,
+           sg.views,sg.message_num,sg.user_id,sg.phone,sg.linkman,su.nick_name,su.avatar
+    from sys_goods sg
+    left join sys_user su on su.id = sg.user_id
+    where sg.id = #{id}
   </select>
 </mapper>

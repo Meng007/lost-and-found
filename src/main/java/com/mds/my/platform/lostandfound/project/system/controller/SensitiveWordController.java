@@ -45,4 +45,7 @@ public class SensitiveWordController {
     public Result echo(@PathVariable Integer id){
         return sysSensitiveWordService.echo(id);
     }
+    /**
+     *  导出铭感词
+     */
 }
