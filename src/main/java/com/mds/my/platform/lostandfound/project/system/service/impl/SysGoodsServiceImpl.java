@@ -134,6 +134,12 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
         return Result.fail("删除失败!");
     }
 
+    @Override
+    public Result echo(Integer id) {
+        GoodsVO vo = sysGoodsMapper.getGoodsInfo(id);
+        return null;
+    }
+
     /**
      * 铭感词检测
      * @param goodsDTO 物品详情

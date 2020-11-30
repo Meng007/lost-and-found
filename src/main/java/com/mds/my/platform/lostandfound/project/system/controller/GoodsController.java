@@ -80,4 +80,12 @@ public class GoodsController {
     public Result remove(@PathVariable Integer id ){
         return sysGoodsService.removeGoods(id);
     }
+
+    /**
+     * 物品数据回显
+     */
+    @GetMapping("/echo/{id}")
+    public Result echo(@PathVariable Integer id){
+        return sysGoodsService.echo(id);
+    }
 }

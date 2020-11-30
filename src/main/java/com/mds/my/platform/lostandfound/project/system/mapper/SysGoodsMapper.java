@@ -43,4 +43,6 @@ public interface SysGoodsMapper extends BaseMapper<SysGoods> {
      */
     @Delete("delete from sys_goods_image where goods_id = #{id}")
     void deleteImage(@Param("id") Integer id);
+
+    GoodsVO getGoodsInfo(Integer id);
 }

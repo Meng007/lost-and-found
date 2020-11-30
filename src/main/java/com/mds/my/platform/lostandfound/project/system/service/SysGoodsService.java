@@ -47,4 +47,11 @@ public interface SysGoodsService extends IService<SysGoods>{
      * @return
      */
     Result removeGoods(Integer id);
+
+    /**
+     *  数据回显
+     * @param id
+     * @return
+     */
+    Result echo(Integer id);
 }
