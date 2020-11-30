@@ -20,4 +20,27 @@
     id, sort, dict_label, dict_value, `status`, dict_type, create_time, update_time, 
     create_user, update_user
   </sql>
+
+  <!--数据字典列表-->
+  <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.DictDataVO">
+    select sdd.id,sdd.sort,sdd.dict_label,sdd.dict_value,sdd.create_time,
+    sdd.update_time,sdd.status,su.nick_name as createUserName,
+    su1.nick_name as updateUserName,sdy.dict_name as dictTypeName
+    from sys_dict_data sdd
+    left join sys_dict_type sdy on sdy.id = sdd.dict_type
+    left join sys_user su on su.id = sdd.create_user
+    left join sys_user su1 on su1 = sdd.update_user
+    <where>
+       <if test="dictType !=null and dictType !=''">
+         and sdd.dict_type = #{dictType}
+       </if>
+      <if test = "dictLabel !=null and dictLabel !=''">
+        and sdd.dict_label like concat('%',#{},'%')
+      </if>
+      <if test="status !=null and status !=''">
+        and sdd.status = #{status}
+      </if>
+    </where>
+    order by sdd.sort desc,sdd.create_time desc
+  </select>
 </mapper>
