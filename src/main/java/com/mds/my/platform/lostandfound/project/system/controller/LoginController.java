@@ -38,17 +38,18 @@ public class LoginController {
     @Autowired
     private SysPermissionService sysPermissionService;
 
-    /** 登录
+    /**
+     * 登录
+     *
      * @param loginBody username password
      * @return
      */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginBody loginBody)
-    {
+    public Result login(@RequestBody LoginBody loginBody) {
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
-        Map<String,String> result = new HashMap<>(1);
-        result.put("token",token);
-        return Result.success("登录成功！",result);
+        Map<String, String> result = new HashMap<>(1);
+        result.put("token", token);
+        return Result.success("登录成功！", result);
     }
 
     /**
@@ -57,19 +58,18 @@ public class LoginController {
      * @return 用户信息
      */
     @GetMapping("/getInfo")
-    public Result getInfo()
-    {
+    public Result getInfo() {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         SysUser user = loginUser.getUser();
         // 角色集合
         Set<String> roles = sysPermissionService.getRolePermission(user);
         // 权限集合
         Set<String> permissions = sysPermissionService.getMenuPermission(user);
-        Map<String,Object> result = new HashMap<>(3);
+        Map<String, Object> result = new HashMap<>(3);
         result.put("user", user);
         result.put("roles", roles);
         result.put("permissions", permissions);
-        return Result.success("获取用户信息成功！",result);
+        return Result.success("获取用户信息成功！", result);
     }
 
     /**
@@ -78,12 +78,11 @@ public class LoginController {
      * @return 路由信息
      */
     @GetMapping("getRouters")
-    public Result getRouters()
-    {
+    public Result getRouters() {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         // 用户信息
         SysUser user = loginUser.getUser();
         List<SysMenuVO> menus = sysMenuService.selectMenuTreeByUserId(user);
-        return Result.success("获取路由成功！",sysMenuService.buildMenus(menus));
+        return Result.success("获取路由成功！", sysMenuService.buildMenus(menus));
     }
 }

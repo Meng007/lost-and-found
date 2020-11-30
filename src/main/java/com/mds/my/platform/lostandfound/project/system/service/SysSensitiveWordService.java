@@ -7,4 +7,10 @@ public interface SysSensitiveWordService extends IService<SysSensitiveWord>{
 
 
     Result saveWord(SysSensitiveWord sysSensitiveWord);
+
+    Result updateSensitiveWord(SysSensitiveWord sysSensitiveWord);
+
+    Result removeSensitiveWord(Integer id);
+
+    Result echo(Integer id);
 }

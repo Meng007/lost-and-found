@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mds.my.platform.lostandfound.common.enums.GoodsStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
@@ -133,32 +132,6 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
             return Result.success("删除成功！");
         }
         return Result.fail("删除失败!");
-    }
-
-    @Override
-    public Result setGoodsStatus(Integer id) {
-        SysGoods one = sysGoodsMapper.selectById(id);
-        if (Objects.isNull(one)){
-            return Result.fail("物品不存在！");
-        }
-        Integer status = one.getStatus();
-        if (Objects.isNull(status)){
-            return Result.fail("数据异常!");
-        }
-        if (GoodsStatus.REVERT.getCode().equals(status)){
-            //归还 则不能修改
-            return Result.success("物品已归还，如存在问题可以联系管理员！");
-        }
-        if (GoodsStatus.PASS.getCode().equals(status)){
-            //通过 则可以归还
-            one.setStatus(GoodsStatus.REVERT.getCode());
-            int i = sysGoodsMapper.updateById(one);
-            if (i>0){
-                return Result.success("归还成功！");
-            }
-            return Result.fail("归还失败！");
-        }
-        return Result.fail("物品待系统审核，不能归还！");
     }
 
     /**

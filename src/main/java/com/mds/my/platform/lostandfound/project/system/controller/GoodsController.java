@@ -80,12 +80,4 @@ public class GoodsController {
     public Result remove(@PathVariable Integer id ){
         return sysGoodsService.removeGoods(id);
     }
-
-    /**
-     * 用户 -- 设置归还状态
-     */
-    @PutMapping("/set/{id}")
-    public Result setGoodsStatus(@PathVariable Integer id){
-        return sysGoodsService.setGoodsStatus(id);
-    }
 }

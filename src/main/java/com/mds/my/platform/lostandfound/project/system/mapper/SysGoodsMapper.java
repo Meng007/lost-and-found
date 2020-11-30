@@ -3,6 +3,7 @@ package com.mds.my.platform.lostandfound.project.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysGoods;
+import com.mds.my.platform.lostandfound.project.system.domain.entity.SysGoodsImage;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -43,4 +44,10 @@ public interface SysGoodsMapper extends BaseMapper<SysGoods> {
      */
     @Delete("delete from sys_goods_image where goods_id = #{id}")
     void deleteImage(@Param("id") Integer id);
+
+    GoodsVO getGoodsInfo(Integer id);
+
+    List<SysGoodsImage> getImages(Integer id);
+
+    GoodsVO getGoodsInfo1(Integer id);
 }

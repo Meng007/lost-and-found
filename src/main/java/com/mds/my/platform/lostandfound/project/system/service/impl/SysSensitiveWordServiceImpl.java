@@ -39,4 +39,40 @@ public class SysSensitiveWordServiceImpl extends ServiceImpl<SysSensitiveWordMap
         }
         return Result.fail("保存敏感词失败!");
     }
+
+    @Override
+    public Result updateSensitiveWord(SysSensitiveWord sysSensitiveWord) {
+        if (Objects.isNull(sysSensitiveWord)){
+            return Result.fail("修改数据不能为空！");
+        }
+        if (Objects.isNull(sysSensitiveWord.getId())){
+            return Result.fail("id不能为空!");
+        }
+        sysSensitiveWord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        sysSensitiveWord.setUpdateUser(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
+        int i = sysSensitiveWordMapper.updateById(sysSensitiveWord);
+        if (i>0){
+            return Result.success("修改成功！");
+        }
+        return Result.fail("修改失败！");
+    }
+
+    @Override
+    public Result removeSensitiveWord(Integer id) {
+        SysSensitiveWord one = sysSensitiveWordMapper.selectById(id);
+        if (Objects.isNull(one)){
+            return Result.fail("删除失败，数据不存在！");
+        }
+        int i = sysSensitiveWordMapper.deleteById(id);
+        if (i>0){
+            return Result.success("删除成功！");
+        }
+        return Result.fail("删除失败！");
+    }
+
+    @Override
+    public Result echo(Integer id) {
+        SysSensitiveWord sysSensitiveWord = sysSensitiveWordMapper.selectById(id);
+        return Result.success("铭感词数据回显成功！",sysSensitiveWord);
+    }
 }
