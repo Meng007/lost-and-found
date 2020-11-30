@@ -12,6 +12,7 @@ import com.mds.my.platform.lostandfound.project.system.domain.entity.SysMenu;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO;
 import com.mds.my.platform.lostandfound.project.system.service.SysMenuService;
+import com.mds.my.platform.lostandfound.project.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,8 @@ public class LoginController {
     private SysMenuService sysMenuService;
     @Autowired
     private SysPermissionService sysPermissionService;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 登录
@@ -84,5 +87,12 @@ public class LoginController {
         SysUser user = loginUser.getUser();
         List<SysMenuVO> menus = sysMenuService.selectMenuTreeByUserId(user);
         return Result.success("获取路由成功！", sysMenuService.buildMenus(menus));
+    }
+
+    /**
+     * 用户注册
+     */
+    public Result reg(@RequestBody SysUser sysUser){
+        return sysUserService.regUser(sysUser);
     }
 }
