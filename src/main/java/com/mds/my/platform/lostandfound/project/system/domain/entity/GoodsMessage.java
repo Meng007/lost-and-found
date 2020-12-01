@@ -12,8 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 物品留言表
-    */
+ * 物品留言表
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,11 +22,11 @@ public class GoodsMessage {
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     *  消息id
+     * 消息id
      */
     @TableField(value = "message_id")
     private Integer messageId;
@@ -72,7 +72,7 @@ public class GoodsMessage {
      * 逻辑删除 1删除，0为删除
      */
     @TableField(value = "is_delete")
-    private Boolean isDelete;
+    private Integer isDelete;
 
     public static final String COL_ID = "id";
 

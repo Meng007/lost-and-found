@@ -26,4 +26,17 @@ public class UserController {
         sysUser.setId(id);
         return sysUserService.updatePassword(sysUser);
     }
+    /**
+     * 获取用户信息
+     */
+    @GetMapping("/info")
+    public Result getUserInfo(){
+        return sysUserInfoService.getInfo();
+    }
+
+    /**
+     * 修改用户头像
+     */
+
+
 }

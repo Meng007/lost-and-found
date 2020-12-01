@@ -19,4 +19,21 @@
     id, message_id, user_id, create_time, goods_id, `status`, agree, message_content, 
     is_delete
   </sql>
+  <!--获取物品留言-->
+  <select id="messageList" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsMessageVO">
+    SELECT gm.id,gm.agree,gm.create_time,gm.goods_id,
+    gm.message_content,gm.message_id,gm.`status`,su.nick_name,su.avatar
+    FROM goods_message gm
+    LEFT JOIN sys_user su on su.id = gm.user_id
+    <where>
+      <if test="goodsId !=null and goodsId !=''">
+        and gm.goods_id = #{goodsId}
+      </if>
+      <if test="messageId !=null and  messageId !=''">
+        and gm.message_id = #{messageId}
+      </if>
+      and gm.status = 1,and gm.is_delete = 0
+    </where>
+    order by gm.agree desc,gm.create_time desc
+  </select>
 </mapper>

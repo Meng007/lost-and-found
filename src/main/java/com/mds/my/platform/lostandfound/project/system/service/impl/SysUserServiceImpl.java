@@ -8,8 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import java.util.Objects;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,7 +18,6 @@ import com.mds.my.platform.lostandfound.project.system.service.SysUserService;
  * @author 13557
  */
 @Service
-@SuppressWarnings("all")
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService{
 
     @Autowired
@@ -29,8 +26,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private SysUserInfoMapper sysUserInfoMapper;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Result regUser(SysUser sysUser) {
