@@ -1,7 +1,10 @@
 package com.mds.my.platform.lostandfound.project.system.service;
+import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Map;
 
 /**
  * @author 1355
@@ -21,4 +24,11 @@ public interface SysUserService extends IService<SysUser>{
      * @return
      */
     Result updatePassword(SysUser sysUser);
+
+    /**
+     * 用户列表
+     * @param params
+     * @return
+     */
+    PageResult getUserList(Map<String, Object> params);
 }

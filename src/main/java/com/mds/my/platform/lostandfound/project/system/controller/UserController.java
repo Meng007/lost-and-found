@@ -1,11 +1,14 @@
 package com.mds.my.platform.lostandfound.project.system.controller;
 
+import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.service.SysUserInfoService;
 import com.mds.my.platform.lostandfound.project.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author 13557
@@ -37,6 +40,14 @@ public class UserController {
     /**
      * 修改用户头像
      */
+
+    /**
+     * 获取用户列表
+     */
+    @GetMapping("/list")
+    public PageResult list(@RequestParam Map<String,Object> params){
+        return sysUserService.getUserList(params);
+    }
 
 
 }

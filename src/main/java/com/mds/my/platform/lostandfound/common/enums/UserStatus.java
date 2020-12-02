@@ -8,8 +8,8 @@ public enum UserStatus {
     /**
      *
      */
-    OK(0, "正常"),
-    DISABLE(1, "停用"),
+    OK(1, "正常"),
+    DISABLE(0, "停用"),
     DELETED(1, "删除"),
     USER_TYPE(1,"管理员")
     ;
