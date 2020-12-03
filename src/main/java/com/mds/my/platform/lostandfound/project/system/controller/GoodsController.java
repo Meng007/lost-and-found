@@ -40,16 +40,12 @@ public class GoodsController {
      */
     @GetMapping("/{type}/list")
     public PageResult list(@RequestParam Map params,@PathVariable String type){
-        System.out.println("类型："+type);
-        System.out.println(Constants.LOST.equals(type));
         if (Constants.LOST.equals(type)){
             params.put("goodsStatus", GoodsStatus.GOODS_LOST.getCode());
         }else if (Constants.TAKE.equals(type)){
-            System.out.println("进来了哟");
-            System.out.println(GoodsStatus.GOODS_TAKE.getCode());
             params.put("goodsStatus",GoodsStatus.GOODS_TAKE.getCode());
         }
-        System.out.println(params.get("goodsStatus"));
+        params.put("status",new Integer(1));
         return sysGoodsService.getGoodsList(params);
     }
 
@@ -79,5 +75,13 @@ public class GoodsController {
     @DeleteMapping("/remove/{id}")
     public Result remove(@PathVariable Integer id ){
         return sysGoodsService.removeGoods(id);
+    }
+
+    /**
+     * 后台获取物品列表
+     */
+    @GetMapping("/list")
+    public PageResult adminGoodsList(@RequestParam Map params){
+        return sysGoodsService.getGoodsList(params);
     }
 }

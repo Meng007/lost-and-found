@@ -59,8 +59,12 @@
       <if test="goodsStatus !=null and goodsStatus !=''">
        and sg.goods_status = #{goodsStatus}
       </if>
-      and sg.status = 1 and sg.is_delete = 0
+      <if test="status !=null">
+        and sg.status = #{status}
+      </if>
+      and sg.is_delete = 0
     </where>
+    order by sg.topping desc , sg.create_time desc
   </select>
 
   <!--我的物品列表-->

@@ -106,14 +106,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!Objects.isNull(vo) && !vo.isEmpty()){
             vo.forEach(val ->{
                 if (UserStatus.OK.getCode().equals(val.getStatus())){
-                    val.setFlag(true);
+                    val.setStatusName("启用");
                 }else {
-                    val.setFlag(false);
+                    val.setStatusName("禁用");
+                }
+                if (UserStatus.USER_TYPE.getCode().equals(val.getUserType())){
+                    val.setTypeName("管理员");
+                }else {
+                    val.setTypeName("普通用户");
                 }
             });
 
         }
         PageInfo<UserVO> info = new PageInfo<>(vo);
-        return PageResult.<UserVO>builder().msg("获取用户列表成功！").code(200).data(vo).build();
+        return PageResult.<UserVO>builder().total(info.getTotal()).msg("获取用户列表成功！").code(200).data(vo).build();
     }
 }

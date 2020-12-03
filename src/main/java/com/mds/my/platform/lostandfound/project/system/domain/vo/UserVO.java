@@ -21,5 +21,9 @@ public class UserVO extends SysUser implements Serializable {
     /**
      * 状态
      */
-    private Boolean flag;
+    private String statusName;
+    /**
+     * 管理员状态
+     */
+    private String typeName;
 }
