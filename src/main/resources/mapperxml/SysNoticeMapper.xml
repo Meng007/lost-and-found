@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.SysNoticeMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.SysNotice">
+    <!--@mbg.generated-->
+    <!--@Table sys_notice-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="cover_image" jdbcType="VARCHAR" property="coverImage" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="is_delete" jdbcType="INTEGER" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="views" jdbcType="INTEGER" property="views" />
+    <result column="agree" jdbcType="INTEGER" property="agree" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, title, cover_image, content, url, `type`, `status`, is_delete, create_time, create_user, 
+    update_time, update_user, views, agree
+  </sql>
+</mapper>
