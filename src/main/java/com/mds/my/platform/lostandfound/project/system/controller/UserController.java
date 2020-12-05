@@ -49,5 +49,13 @@ public class UserController {
         return sysUserService.getUserList(params);
     }
 
+    /**
+     * 删除用户
+     */
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Integer id){
+        return sysUserService.removeUser(id);
+    }
+
 
 }

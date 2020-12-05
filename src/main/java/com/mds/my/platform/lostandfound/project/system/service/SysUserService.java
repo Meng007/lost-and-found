@@ -31,4 +31,11 @@ public interface SysUserService extends IService<SysUser>{
      * @return
      */
     PageResult getUserList(Map<String, Object> params);
+
+    /**
+     *  删除用户
+     * @param id
+     * @return
+     */
+    Result removeUser(Integer id);
 }

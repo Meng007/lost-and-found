@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
+import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
+import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUserInfo;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.UserVO;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysUserInfoMapper;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +37,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private SysUserInfoMapper sysUserInfoMapper;
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public Result regUser(SysUser sysUser) {
@@ -120,5 +125,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         PageInfo<UserVO> info = new PageInfo<>(vo);
         return PageResult.<UserVO>builder().total(info.getTotal()).msg("获取用户列表成功！").code(200).data(vo).build();
+    }
+
+    @Override
+    public Result removeUser(Integer id) {
+        SysUser sysUser = sysUserMapper.selectById(id);
+        if (Objects.isNull(sysUser)){
+            return Result.fail("删除失败，用户不存在！");
+        }
+        SysUser user = tokenService.getLoginUser(ServletUtils.getRequest()).getUser();
+        if (Objects.isNull(user)){
+            return Result.fail("删除失败，用户未登录！");
+        }
+        if (!UserStatus.USER_TYPE.getCode().equals(user.getUserType())){
+            return Result.fail("删除失败，你不是管理员！");
+        }
+        sysUser.setIsDelete(1);
+        int i = sysUserMapper.updateById(sysUser);
+        if (i>0){
+            return Result.success("删除成功！");
+        }
+        return Result.fail("删除失败！");
     }
 }
