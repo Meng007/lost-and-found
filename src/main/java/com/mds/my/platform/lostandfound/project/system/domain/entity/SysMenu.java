@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mds.my.platform.lostandfound.common.web.Result;
 import lombok.Data;
 
 /**
@@ -136,4 +137,6 @@ public class SysMenu {
     public static final String COL_VISIBLE = "visible";
 
     public static final String COL_STATUS = "status";
+
+
 }

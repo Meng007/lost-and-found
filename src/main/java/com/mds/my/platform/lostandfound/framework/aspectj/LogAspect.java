@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- *  日志切面类
+ * 日志切面类
+ *
  * @author 蒙德世
  */
 @Aspect
@@ -26,48 +27,42 @@ public class LogAspect {
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
     /**
-     *  配置切入点
+     * 配置切入点
      */
     @Pointcut("@annotation(com.mds.my.platform.lostandfound.framework.aspectj.lang.Log)")
-    public void logPointCut(){}
+    public void logPointCut() {
+    }
 
     /**
      * 处理完请求后执行
-     * @param joinPoint 切点
+     *
+     * @param joinPoint  切点
      * @param jsonResult 参数
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, Object jsonResult)
-    {
+    public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
         handleLog(joinPoint, null, jsonResult);
     }
 
     /**
-     *
      * @param joinPoint 切点
-     * @param e 异常
+     * @param e         异常
      */
     @AfterThrowing(value = "logPointCut()", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Exception e)
-    {
+    public void doAfterThrowing(JoinPoint joinPoint, Exception e) {
         handleLog(joinPoint, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, final Exception e, Object jsonResult)
-    {
-        try
-        {
+    protected void handleLog(final JoinPoint joinPoint, final Exception e, Object jsonResult) {
+        try {
             // 获得注解
             Log controllerLog = getAnnotationLog(joinPoint);
-            if (controllerLog == null)
-            {
+            if (controllerLog == null) {
                 return;
             }
 
-           log.info("------------------------aop-----------------------------");
-        }
-        catch (Exception exp)
-        {
+            log.info("------------------------aop-----------------------------");
+        } catch (Exception exp) {
             // 记录本地异常日志
             log.error("==前置通知异常==");
             log.error("异常信息:{}", exp.getMessage());
@@ -76,7 +71,8 @@ public class LogAspect {
     }
 
     /**
-     *  获取方法上的注解
+     * 获取方法上的注解
+     *
      * @param joinPoint 切点
      * @return
      */
@@ -84,11 +80,11 @@ public class LogAspect {
         //获取签名
         Signature signature = joinPoint.getSignature();
         //强转换类型
-        MethodSignature methodSignature = (MethodSignature)signature;
+        MethodSignature methodSignature = (MethodSignature) signature;
         //获取方法
         Method method = methodSignature.getMethod();
         //null判断
-        if(method !=null){
+        if (method != null) {
             //获取方法上的注解
             return method.getAnnotation(Log.class);
         }

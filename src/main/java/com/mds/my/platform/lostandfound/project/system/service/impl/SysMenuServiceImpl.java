@@ -110,6 +110,67 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     /**
+     *  修改菜单
+     * @param sysMenu
+     * @return
+     */
+    @Override
+    public Result updateMenu(SysMenu sysMenu) {
+        if (Objects.isNull(sysMenu)){
+            return Result.fail("修改提交的数据不能为空！");
+        }
+        SysMenu one = sysMenuMapper.selectById(sysMenu.getId());
+        if (Objects.isNull(one)){
+            return Result.fail("修改的数据不存在！");
+        }
+        int i = sysMenuMapper.updateById(sysMenu);
+        if (i>0){
+            return Result.success("修改成功！");
+        }
+        return Result.fail("修改失败！");
+    }
+
+    /**
+     *  删除菜单
+     * @param id
+     * @return
+     */
+    @Override
+    public Result removeMenu(Integer id) {
+        SysMenu one = sysMenuMapper.selectById(id);
+        if (Objects.isNull(one)){
+            return Result.fail("删除失败！数据不存在！");
+        }
+        int i = sysMenuMapper.deleteById(id);
+        if (i>0){
+            return Result.success("删除成功！");
+        }
+        return Result.fail("删除失败！");
+    }
+
+
+    /**
+     *  获取菜单详情
+     * @param id
+     * @return
+     */
+    @Override
+    public Result getMenuInfo(Integer id) {
+        SysMenu sysMenu = sysMenuMapper.selectById(id);
+        return Result.success("菜单详情",sysMenu);
+    }
+
+    /**
+     *  菜单列表
+     * @param params
+     * @return
+     */
+    @Override
+    public Result findAll(Map<String, Object> params) {
+        return null;
+    }
+
+    /**
      * 获取组件信息
      *
      * @param menu 菜单信息

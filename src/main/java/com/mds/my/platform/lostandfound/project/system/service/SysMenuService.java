@@ -9,6 +9,7 @@ import com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface SysMenuService extends IService<SysMenu>{
 
@@ -39,4 +40,32 @@ public interface SysMenuService extends IService<SysMenu>{
      * @return
      */
     Result saveMenu(SysMenu sysMenu);
+
+    /**
+     *  修改菜单
+     * @param sysMenu
+     * @return
+     */
+    Result updateMenu(SysMenu sysMenu);
+
+    /**
+     *  删除菜单
+     * @param id
+     * @return
+     */
+    Result removeMenu(Integer id);
+
+    /**
+     *  获取菜单详情
+     * @param id
+     * @return
+     */
+    Result getMenuInfo(Integer id);
+
+    /**
+     *  获取菜单列表
+     * @param params
+     * @return
+     */
+    Result findAll(Map<String, Object> params);
 }
