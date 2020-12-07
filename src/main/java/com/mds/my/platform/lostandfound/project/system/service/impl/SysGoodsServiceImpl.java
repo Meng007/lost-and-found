@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -66,15 +67,7 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
 
     @Override
     public PageResult getGoodsList(Map params) {
-        String page = (String)params.get("page");
-        String size = (String)params.get("size");
-        Integer p = 1;
-        Integer s = 10;
-        if (!StringUtils.isEmpty(page) && !StringUtils.isEmpty(size)){
-            p = Integer.parseInt(page);
-            s = Integer.parseInt(size);
-        }
-        PageHelper.startPage(p,s);
+        StartPageUtils.startPage(params);
         List<GoodsVO> gs = sysGoodsMapper.findAll(params);
         PageInfo<GoodsVO> pageInfo = new PageInfo(gs);
         return PageResult.<GoodsVO>builder().code(200).data(gs).total(pageInfo.getTotal()).msg("获取物品列表成功！").build();
@@ -109,11 +102,7 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
             sysGoodsMapper.deleteImage(goodsDTO.getId());
             sysGoodsMapper.saveImages(goodsDTO);
         }
-        //SysGoods g = new SysGoods();
-        //BeanUtils.copyProperties(goodsDTO,g);
-        LambdaQueryWrapper<SysGoods> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(SysGoods::getId,goodsDTO.getId());
-        int i = sysGoodsMapper.update(goodsDTO,lqw);
+        int i = sysGoodsMapper.updateById(goodsDTO);
         if (i>0){
             return Result.success("修改成功！");
         }

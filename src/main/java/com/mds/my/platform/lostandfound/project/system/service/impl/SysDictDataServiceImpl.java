@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.enums.DictStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -45,15 +46,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Override
     public PageResult findAll(Map<String, Object> params) {
-        String page = (String)params.get("page");
-        String size = (String)params.get("size");
-        Integer p = 1;
-        Integer s= 10;
-        if (!StringUtils.isEmpty(page) && !StringUtils.isEmpty(size)){
-            p = Integer.parseInt(page);
-            s = Integer.parseInt(size);
-            PageHelper.startPage(p,s);
-        }
+        StartPageUtils.startPage(params);
         List<DictDataVO> data = sysDictDataMapper.findAll(params);
         PageInfo<DictDataVO> info = new PageInfo<>(data);
         return PageResult.<DictDataVO>builder().code(200).total(info.getTotal()).data(data).build();

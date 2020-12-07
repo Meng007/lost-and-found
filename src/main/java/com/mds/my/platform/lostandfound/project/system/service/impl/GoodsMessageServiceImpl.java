@@ -3,6 +3,7 @@ package com.mds.my.platform.lostandfound.project.system.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -67,7 +68,10 @@ public class GoodsMessageServiceImpl extends ServiceImpl<GoodsMessageMapper, Goo
             goodsMessage.setMessageId(0);
         }
         int i = goodsMessageMapper.insert(goodsMessage);
-        if (i>0){
+        if(i>0){
+            return Result.success("留言成功！");
+        }
+        /*if (i>0){
             if (goodsMessage.getMessageId() == 0){
                 String con = "你的发布的物品【"+sysGoods.getGoodsTitle()+"】被["+user.getUsername()+"]留言，点击["+goodsMessage.getGoodsId()+"]可以查看";
                 //物品留言信息
@@ -79,22 +83,14 @@ public class GoodsMessageServiceImpl extends ServiceImpl<GoodsMessageMapper, Goo
                 //消息类型 1 系统消息 2 留言消息
                 goodsMessage(user,sysGoods,con,2);
             }
-            return Result.success("留言成功！");
-        }
+
+        }*/
         return Result.fail("留言失败！");
     }
 
     @Override
     public PageResult messageList(Map<String, Object> params) {
-        String page = (String)params.get("page");
-        String size = (String)params.get("size");
-        Integer p = 1;
-        Integer s = 10;
-        if (!StringUtils.isEmpty(page) && !StringUtils.isEmpty(size)){
-            p = Integer.parseInt(page);
-            s = Integer.parseInt(size);
-        }
-        PageHelper.startPage(p,s);
+        StartPageUtils.startPage(params);
         List<GoodsMessageVO> vo  = goodsMessageMapper.messageList(params);
         //父级
         //getParentMessage(vo,0);

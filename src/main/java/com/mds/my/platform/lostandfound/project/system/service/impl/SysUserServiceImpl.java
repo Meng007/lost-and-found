@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -97,15 +98,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public PageResult getUserList(Map<String, Object> params) {
-        String page = (String)params.get("page");
-        String size = (String)params.get("size");
-        Integer p = 1;
-        Integer s = 10;
-        if (!StringUtils.isEmpty(page) && !StringUtils.isEmpty(size)){
-            p = Integer.parseInt(page);
-            s = Integer.parseInt(size);
-        }
-        PageHelper.startPage(p,s);
+        StartPageUtils.startPage(params);
         params.put("isDelete",new Integer(0));
         List<UserVO> vo = sysUserMapper.getUserList(params);
         if (!Objects.isNull(vo) && !vo.isEmpty()){

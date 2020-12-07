@@ -33,6 +33,7 @@ import java.lang.reflect.Parameter;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 消息切面
@@ -59,7 +60,10 @@ public class MessageAspect {
      */
     @AfterReturning(pointcut = "messagePointCut()", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
-        handleMessage(joinPoint, null, jsonResult);
+        CompletableFuture.runAsync(() ->{
+            handleMessage(joinPoint, null, jsonResult);
+        });
+
     }
 
     /**

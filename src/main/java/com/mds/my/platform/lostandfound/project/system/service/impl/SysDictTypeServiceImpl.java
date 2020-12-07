@@ -2,7 +2,9 @@ package com.mds.my.platform.lostandfound.project.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -45,20 +47,10 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
 
     @Override
     public PageResult findAll(Map params) {
-        String page = (String)params.get("page");
-        String size = (String)params.get("size");
-        Integer p = 1;
-        Integer s = 10;
-        if (StringUtils.isEmpty(page) ||StringUtils.isEmpty(size)){
-            try {
-                p = Integer.parseInt(page);
-                s = Integer.parseInt(size);
-            }catch (Exception e){
-
-            }
-        }
+        StartPageUtils.startPage(params);
         LambdaQueryWrapper<SysDictType> lqw = new LambdaQueryWrapper<>();
-        Page<SysDictType> sysDictTypePage = sysDictTypeMapper.selectPage(new Page<>(p, s), lqw);
-        return PageResult.<SysDictType>builder().msg("获取字典类型成功!").total(sysDictTypePage.getTotal()).data(sysDictTypePage.getRecords()).build();
+        List<SysDictType> list = sysDictTypeMapper.selectList(lqw);
+        PageInfo<SysDictType> info = new PageInfo<>(list);
+        return PageResult.<SysDictType>builder().msg("获取字典类型成功!").total(info.getTotal()).data(list).build();
     }
 }
