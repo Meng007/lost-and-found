@@ -27,7 +27,7 @@ public class SysMessage {
      * 消息类型：1系统消息，2留言消息，
      */
     @TableField(value = "type")
-    private Integer type;
+    private String type;
 
     /**
      * 消息内容

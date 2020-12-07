@@ -168,7 +168,7 @@ public class GoodsMessageServiceImpl extends ServiceImpl<GoodsMessageMapper, Goo
         //接收消息人
         sysMessage.setUserId(sysGoods.getUserId());
         //消息类型 1 系统消息 2 留言消息
-        sysMessage.setType(type);
+        sysMessage.setType("弃用");
         int m = sysMessageMapper.insert(sysMessage);
         if (m>0){
         }

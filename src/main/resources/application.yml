@@ -38,3 +38,11 @@ spring:
     restart:
       # 热部署开关
       enabled: true
+
+# 系统配置
+# mds.goods.message.url
+# 查看留言状况地址
+mds:
+  goods:
+    message:
+      url: http://127.0.0.1:8080/goods/info?goodsId=

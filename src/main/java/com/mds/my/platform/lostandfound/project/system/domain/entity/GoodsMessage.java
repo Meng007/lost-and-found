@@ -69,7 +69,7 @@ public class GoodsMessage {
     private String messageContent;
 
     /**
-     * 逻辑删除 1删除，0为删除
+     * 逻辑删除 1删除，0未删除
      */
     @TableField(value = "is_delete")
     private Integer isDelete;
