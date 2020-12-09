@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mds.my.platform.lostandfound.project.system.mapper.SysCateMapper">
+  <resultMap id="BaseResultMap" type="com.mds.my.platform.lostandfound.project.system.domain.entity.SysCate">
+    <!--@mbg.generated-->
+    <!--@Table sys_cate-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cate_name" jdbcType="VARCHAR" property="cateName" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    sc.id, sc.cate_name, sc.pid, sc.sort, sc.`status`, sc.create_time, sc.create_user
+  </sql>
+  <!--获取系统分类-->
+  <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.CateVO">
+    select su.nick_name, <include refid="Base_Column_List" />
+    from sys_cate sc
+    left join sys_user su on su.id = sc.create_user
+  </select>
+
+  <!--同父id获取分类-->
+  <select id="getCateByPid" parameterType="int" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.CateVO">
+    select id,cate_name from sys_cate where status = 0 and pid = #{pid}
+  </select>
+</mapper>

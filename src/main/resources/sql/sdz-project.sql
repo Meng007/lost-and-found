@@ -276,3 +276,17 @@ CREATE TABLE `sys_dict_type` (
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典类型';
+
+
+-- ----------------------------
+-- Table structure for sys_cate
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_cate`;
+CREATE TABLE `sys_cate` (
+  `id` int(10) NOT NULL COMMENT '主键',
+  `cate_name` varchar(50) DEFAULT NULL COMMENT '分类名称',
+  `pid` int(10) DEFAULT NULL COMMENT '父级id',
+  `sort` int(4) DEFAULT NULL COMMENT '排序',
+  `status` int(1) DEFAULT NULL COMMENT '状态  1禁用 0可用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='系统分类';

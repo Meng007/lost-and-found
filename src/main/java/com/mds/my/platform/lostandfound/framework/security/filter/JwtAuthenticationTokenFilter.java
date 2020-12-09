@@ -32,9 +32,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException
     {
-        System.out.println("---------------过滤器---------------");
         LoginUser loginUser = tokenService.getLoginUser(request);
-        System.out.println("当前用户："+loginUser);
         if (!Objects.isNull(loginUser) && Objects.isNull(SecurityUtils.getAuthentication()))
         {
             tokenService.verifyToken(loginUser);

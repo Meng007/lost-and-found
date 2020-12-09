@@ -2,8 +2,12 @@ package com.mds.my.platform.lostandfound.framework.security.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mds.my.platform.lostandfound.common.constant.Constants;
+import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
+import com.mds.my.platform.lostandfound.common.utils.ip.AddressUtils;
+import com.mds.my.platform.lostandfound.common.utils.ip.IpUtils;
 import com.mds.my.platform.lostandfound.framework.redis.RedisService;
 import com.mds.my.platform.lostandfound.framework.security.LoginUser;
+import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -55,8 +59,7 @@ public class TokenService {
      * @param loginUser 用户信息
      * @return 令牌
      */
-    public String createToken(LoginUser loginUser)
-    {
+    public String createToken(LoginUser loginUser) {
         String token = UUID.randomUUID().toString();
         loginUser.setToken(token);
         //setUserAgent(loginUser);
@@ -73,8 +76,7 @@ public class TokenService {
      * @param claims 数据声明
      * @return 令牌
      */
-    private String createToken(Map<String, Object> claims)
-    {
+    private String createToken(Map<String, Object> claims) {
         String token = Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
@@ -86,32 +88,29 @@ public class TokenService {
      *
      * @return 用户信息
      */
-    public LoginUser getLoginUser(HttpServletRequest request)
-    {
+    public LoginUser getLoginUser(HttpServletRequest request) {
         // 获取请求携带的令牌
         String token = getToken(request);
-        if (StringUtils.isNotEmpty(token))
-        {
+        if (StringUtils.isNotEmpty(token)) {
             //解析token
             Claims claims = parseToken(token);
             // 解析对应的权限以及用户信息
             String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
             String userKey = getTokenKey(uuid);
-            String userStr = (String)redisService.get(userKey);
-            System.out.println("redis中用户字符串："+userStr);
+            String userStr = (String) redisService.get(userKey);
+            System.out.println("redis中用户字符串：" + userStr);
             LoginUser user = JSONObject.parseObject(userStr, LoginUser.class);
-            System.out.println("str转换成Obj:"+user);
+            System.out.println("str转换成Obj:" + user);
             return user;
         }
         return null;
     }
+
     /**
      * 设置用户身份信息
      */
-    public void setLoginUser(LoginUser loginUser)
-    {
-        if (Objects.isNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken()))
-        {
+    public void setLoginUser(LoginUser loginUser) {
+        if (Objects.isNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken())) {
             refreshToken(loginUser);
         }
     }
@@ -119,20 +118,20 @@ public class TokenService {
     /**
      * 删除用户身份信息
      */
-    public void delLoginUser(String token)
-    {
-        if (StringUtils.isNotEmpty(token))
-        {
+    public void delLoginUser(String token) {
+        if (StringUtils.isNotEmpty(token)) {
             String userKey = getTokenKey(token);
             redisService.delete(userKey);
         }
     }
 
     /**
-     *  刷新token
+     * 刷新token
+     *
      * @param loginUser
      */
     private void refreshToken(LoginUser loginUser) {
+        setUserAgent(loginUser);
         loginUser.setLoginTime(System.currentTimeMillis());
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
@@ -141,7 +140,8 @@ public class TokenService {
     }
 
     /**
-     *  token key 拼接
+     * token key 拼接
+     *
      * @param uuid
      * @return
      */
@@ -150,7 +150,8 @@ public class TokenService {
     }
 
     /**
-     *  解析token
+     * 解析token
+     *
      * @param token
      * @return
      */
@@ -162,18 +163,32 @@ public class TokenService {
     }
 
     /**
-     *  获取请求中的token
+     * 获取请求中的token
+     *
      * @param request
      * @return
      */
 
     private String getToken(HttpServletRequest request) {
         String token = request.getHeader(header);
-        if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX))
-        {
+        if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX)) {
             token = token.replace(Constants.TOKEN_PREFIX, "");
         }
         return token;
+    }
+
+    /**
+     * 设置用户代理信息
+     *
+     * @param loginUser 登录信息
+     */
+    public void setUserAgent(LoginUser loginUser) {
+        UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
+        String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        loginUser.setIpaddr(ip);
+        loginUser.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
+        loginUser.setBrowser(userAgent.getBrowser().getName());
+        loginUser.setOs(userAgent.getOperatingSystem().getName());
     }
 
     /**
@@ -182,8 +197,7 @@ public class TokenService {
      * @param loginUser token 令牌
      * @return 令牌
      */
-    public void verifyToken(LoginUser loginUser)
-    {
+    public void verifyToken(LoginUser loginUser) {
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
         if (expireTime - currentTime <= MILLIS_MINUTE_TEN) {

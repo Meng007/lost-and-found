@@ -57,5 +57,13 @@ public class UserController {
         return sysUserService.removeUser(id);
     }
 
+    /**
+     * 获取登录用户
+     */
+    @GetMapping("/login/list")
+    public PageResult loginList(@RequestParam Map<String,Object> params){
+        return sysUserService.getLoginUserList(params);
+    }
+
 
 }

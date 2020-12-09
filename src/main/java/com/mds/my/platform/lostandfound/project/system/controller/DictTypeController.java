@@ -31,6 +31,16 @@ public class DictTypeController {
         return sysDictTypeService.findAll(params);
     }
 
+    @PutMapping("/update")
+    public Result update(@RequestBody SysDictType sysDictType){
+        return sysDictTypeService.updateDictType(sysDictType);
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Integer id){
+        return sysDictTypeService.removeDictType(id);
+    }
+
     @GetMapping("/select")
     public Result getList(){
         return Result.success("获取字典分类成功！",sysDictTypeService.list());

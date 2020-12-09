@@ -122,7 +122,12 @@ public class MessageAspect {
         //获取spring容器里的 SysMessageMapper 对象 ==>> 用来保存消息
         SysMessageMapper sysMessageMapper = SpringBeanUtils.getBean(SysMessageMapper.class);
         //请求的参数
-        GoodsMessage goodsMessage = getRequestBean(request,GoodsMessage.class);
+        GoodsMessage goodsMessage = null;
+        try {
+            goodsMessage = getRequestBean(request, GoodsMessage.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //消息内容
         String content = "";
         //获取物品消息
@@ -160,21 +165,17 @@ public class MessageAspect {
         sysMessageMapper.insert(sysMessage);
     }
 
-    private <T> T getRequestBean(HttpServletRequest request, Class<T> cls) {
+    private <T> T getRequestBean(HttpServletRequest request, Class<T> cls) throws IOException {
         @Cleanup
         InputStream in = null;
         StringBuffer buffer = new StringBuffer();
         byte[] bytes = new byte[1024];
-        try {
              in = request.getInputStream();
             int len = 0;
             while ((len = in.read(bytes,0,bytes.length)) !=-1){
                 System.out.println("数据长度："+len);
                 buffer.append(new String(buffer));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         if (buffer.toString().length()>0){
             T t = JSONObject.parseObject(buffer.toString(), cls);
             return t;

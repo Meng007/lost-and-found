@@ -19,4 +19,28 @@
     id, dict_name, dict_type, `status`, create_user, update_user, create_time, update_time, 
     remark
   </sql>
+  <!--获取字典列表-->
+  <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.DictTypeVO">
+    select dt.id,dt.dict_name,dt.dict_type,dt.status,su.nick_name,dt.remark,dt.create_time
+    from sys_dict_type dt
+    left join sys_user su on su.id = dt.create_user
+    <where>
+      <if test="status !=null and status !=''">
+        and dt.status = #{status}
+      </if>
+      <if test="dictName !=null and dictName !=''">
+        and dt.dict_name like concat('%',#{dictName},'%')
+      </if>
+      <if test="dictType !=nul and dictType !=''">
+        and dt.dict_type like concat('%',#{dictType},'%')
+      </if>
+      <if test="beginTime !=null and beginTime !=''">
+        and date_format(dt.create_time,'%Y-%m-%d') >= date_format(#{beginTime},'%Y-%m-%d')
+      </if>
+      <if test="endTime !=null and endTime !=''">
+        and   date_format(#{endTime},'%Y-%m-%d') >= date_format(dt.create_time,'%Y-%m-%d')
+      </if>
+    </where>
+    order by dt.create_time desc
+  </select>
 </mapper>

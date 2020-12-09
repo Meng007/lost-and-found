@@ -48,8 +48,19 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public PageResult findAll(Map<String, Object> params) {
         StartPageUtils.startPage(params);
         List<DictDataVO> data = sysDictDataMapper.findAll(params);
+        if (!Objects.isNull(data) && !data.isEmpty()){
+            data.forEach(val ->{
+                if (new Integer(1).equals(val.getStatus())){
+                    val.setStatusName("禁用");
+                }else if (new Integer(0).equals(val.getStatus())){
+                    val.setStatusName("启用");
+                }else {
+                    val.setStatusName("其他");
+                }
+            });
+        }
         PageInfo<DictDataVO> info = new PageInfo<>(data);
-        return PageResult.<DictDataVO>builder().code(200).total(info.getTotal()).data(data).build();
+        return PageResult.<DictDataVO>builder().code(200).total(info.getTotal()).data(info.getList()).build();
     }
 
     @Override

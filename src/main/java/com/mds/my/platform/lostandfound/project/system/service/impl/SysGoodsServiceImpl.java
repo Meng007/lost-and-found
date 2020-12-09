@@ -70,7 +70,7 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
         StartPageUtils.startPage(params);
         List<GoodsVO> gs = sysGoodsMapper.findAll(params);
         PageInfo<GoodsVO> pageInfo = new PageInfo(gs);
-        return PageResult.<GoodsVO>builder().code(200).data(gs).total(pageInfo.getTotal()).msg("获取物品列表成功！").build();
+        return PageResult.<GoodsVO>builder().code(200).data(pageInfo.getList()).total(pageInfo.getTotal()).msg("获取物品列表成功！").build();
     }
 
     /**

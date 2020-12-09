@@ -13,4 +13,8 @@ public interface SysDictTypeService extends IService<SysDictType>{
     Result saveDictType(SysDictType sysDictType);
 
     PageResult findAll(Map params);
+
+    Result updateDictType(SysDictType sysDictType);
+
+    Result removeDictType(Integer id);
 }

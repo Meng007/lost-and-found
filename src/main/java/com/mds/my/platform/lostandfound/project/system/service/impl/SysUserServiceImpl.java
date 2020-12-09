@@ -1,26 +1,28 @@
 package com.mds.my.platform.lostandfound.project.system.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mds.my.platform.lostandfound.common.constant.Constants;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
+import com.mds.my.platform.lostandfound.framework.redis.RedisService;
+import com.mds.my.platform.lostandfound.framework.security.LoginUser;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUserInfo;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.UserVO;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysUserInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysUserMapper;
@@ -40,6 +42,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserInfoMapper sysUserInfoMapper;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private RedisService redisService;
+    
 
     @Override
     public Result regUser(SysUser sysUser) {
@@ -117,7 +122,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         }
         PageInfo<UserVO> info = new PageInfo<>(vo);
-        return PageResult.<UserVO>builder().total(info.getTotal()).msg("获取用户列表成功！").code(200).data(vo).build();
+        return PageResult.<UserVO>builder().total(info.getTotal()).msg("获取用户列表成功！").code(200).data(info.getList()).build();
     }
 
     @Override
@@ -139,5 +144,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return Result.success("删除成功！");
         }
         return Result.fail("删除失败！");
+    }
+
+    @Override
+    public PageResult getLoginUserList(Map<String, Object> params) {
+        List<LoginUser> list = new ArrayList<>();
+        Set<String> keys = redisService.keys(Constants.LOGIN_TOKEN_KEY + "*");
+        for (String key : keys){
+            if (StringUtils.isNotEmpty(key)){
+                String loginUser = (String)redisService.getCacheObject(key);
+                LoginUser user = JSONObject.parseObject(loginUser, LoginUser.class);
+                list.add(user);
+            }
+        }
+        PageInfo<LoginUser> info = new PageInfo<>(list);
+        return PageResult.<LoginUser>builder().code(200).data(info.getList()).msg("无数据！").total(info.getTotal()).build();
     }
 }
