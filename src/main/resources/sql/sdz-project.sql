@@ -252,7 +252,7 @@ CREATE TABLE `sys_dict_data` (
   `dict_label` varchar(50) DEFAULT NULL COMMENT '字典标签',
   `dict_value` varchar(255) DEFAULT NULL COMMENT '字典值',
   `status` int(1) DEFAULT NULL COMMENT '字典数据状态 1：停用，0：可用',
-  `dict_type` varchar(255) DEFAULT NULL COMMENT '字典类型',
+  `dict_type` int(10) DEFAULT NULL COMMENT '字典类型',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `create_user` int(10) DEFAULT NULL COMMENT '创建用户',
