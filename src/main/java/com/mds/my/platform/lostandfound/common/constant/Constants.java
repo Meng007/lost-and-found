@@ -39,4 +39,8 @@ public class Constants {
      * 拾到
      */
     public static final String TAKE = "take";
+    /**
+     * 资源映射路径 前缀
+     */
+    public static final String RESOURCE_PREFIX = "/profile";
 }

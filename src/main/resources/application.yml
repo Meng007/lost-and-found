@@ -43,6 +43,10 @@ spring:
 # mds.goods.message.url
 # 查看留言状况地址
 mds:
+  systemName: 小主平台
+  version: 2.0
+  filePath: F:/xiaozhu/file
   goods:
     message:
       url: http://127.0.0.1:8080/goods/info?goodsId=
+
