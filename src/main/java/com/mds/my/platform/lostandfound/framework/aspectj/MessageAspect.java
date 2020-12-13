@@ -98,12 +98,31 @@ public class MessageAspect {
         }
         sysMessage.setType(type.trim());
         switch (type){
+            //物品留言
             case "goodsMessage": saveGoodsMessage(sysMessage);
+            break;
+            //留言
+            case "comment": saveComment(sysMessage);
+            break;
+            //系统消息
+            case"system": saveSystemMessage(sysMessage);
+            break;
+            //留言点赞
+            case "agree": saveAgreeMessage(sysMessage);
             break;
             default:
                 System.out.println("无操作");
         }
 
+    }
+
+    private void saveAgreeMessage(SysMessage sysMessage) {
+    }
+
+    private void saveSystemMessage(SysMessage sysMessage) {
+    }
+
+    private void saveComment(SysMessage sysMessage) {
     }
 
     /**
@@ -173,7 +192,6 @@ public class MessageAspect {
              in = request.getInputStream();
             int len = 0;
             while ((len = in.read(bytes,0,bytes.length)) !=-1){
-                System.out.println("数据长度："+len);
                 buffer.append(new String(buffer));
             }
         if (buffer.toString().length()>0){
