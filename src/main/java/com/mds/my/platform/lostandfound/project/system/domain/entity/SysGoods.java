@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 物品表
@@ -51,7 +52,8 @@ public class SysGoods {
      * 丢失时间
      */
     @TableField(value = "lose_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date loseTime;
 
     /**
@@ -119,6 +121,11 @@ public class SysGoods {
      */
     @TableField(value = "goods_status")
     private Integer goodsStatus;
+    /**
+     * 物品 地址
+     */
+    @TableField(value = "address")
+    private String address;
 
     public static final String COL_ID = "id";
 

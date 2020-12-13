@@ -51,10 +51,11 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
         goodsDTO.setCreateTime(new Timestamp(System.currentTimeMillis()));
         goodsDTO.setUserId(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
         goodsDTO.setIsDelete(0);
+        goodsDTO.setTopping(false);
+        goodsDTO.setStatus(1);
         //敏感词检测
         //sensitiveWord(goodsDTO);
         int i = sysGoodsMapper.insert(goodsDTO);
-        System.out.println("返回id ->"+goodsDTO.getId());
         if (!Objects.isNull(goodsDTO.getImages()) && !goodsDTO.getImages().isEmpty()){
             //保存详情图片
             sysGoodsMapper.saveImages(goodsDTO);

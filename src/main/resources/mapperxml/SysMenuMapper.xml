@@ -34,7 +34,7 @@
         WHERE sur.user_id = #{id}
     </select>
 
-    <select id="selectMenuTreeByUserId">
+    <select id="selectMenuTreeByUserId" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO">
         SELECT distinct sm.id,sm.menu_name,sm.pid,sm.order,sm.path,sm.component,sm.is_frame,sm.menu_type,
       sm.icon,sm.visible,sm.status
         FROM sys_menu sm
@@ -43,4 +43,18 @@
         left join sys_user_role sur on sur.role_id = sr.id
         where sur.user_id = #{id}
     </select>
+
+  <!--后台获取菜单列表-->
+  <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.MenuVO">
+    select sm.id,sm.menu_name,sm.pid,sm.order,sm.path,sm.component,
+    sm.is_frame,sm.perms,sm.create_time,sm.user_id,sm.icon,sm.visible,
+    sm.status
+     from sys_menu sm
+     left join sys_user su on su.id = sm.user_id
+     <where>
+       <if test="menuName !=null and menuName !=''">
+         and sm.menu_name like concat('%',#{menuName},'%')
+       </if>
+     </where>
+  </select>
 </mapper>

@@ -6,6 +6,7 @@ import com.mds.my.platform.lostandfound.common.exception.BaseException;
 import com.mds.my.platform.lostandfound.common.utils.SecurityUtils;
 import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
+import com.mds.my.platform.lostandfound.project.system.domain.vo.MenuVO;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.MetaVo;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.RouterVo;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysMenuMapper;
@@ -167,7 +169,32 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public Result findAll(Map<String, Object> params) {
-        return null;
+        List<MenuVO> list = sysMenuMapper.findAll(params);
+        if (!Objects.isNull(list) && !list.isEmpty()){
+            List<MenuVO> pList = list.stream().filter(val -> val.getPid() == null || val.getPid() == 0).collect(Collectors.toList());
+            if (!Objects.isNull(pList) && !pList.isEmpty()){
+                pList.forEach(val ->{
+                    getChildren(list,val);
+                });
+            }
+            return Result.success("获取菜单成功！",pList);
+        }
+        return Result.success("获取菜单成功！",list);
+    }
+
+    private void getChildren(List<MenuVO> list, MenuVO vo) {
+        List<MenuVO> children = new ArrayList<>();
+        list.forEach(val ->{
+            if (val.getPid().equals(val.getId())){
+                children.add(val);
+            }
+        });
+        if (children.size()>0){
+            vo.setChildren(children);
+            children.forEach(val ->{
+                getChildren(list,val);
+            });
+        }
     }
 
     /**
