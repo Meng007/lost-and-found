@@ -55,4 +55,12 @@ public class DictDataController {
     public Result list(@PathVariable Integer type){
         return sysDictDataService.getDictDataByType(type);
     }
+
+    /**
+     * 通过字典类型代号 找字典数据
+     */
+    @GetMapping("/{dictType}")
+    public Result dictData(@PathVariable String dictType){
+        return sysDictDataService.getDictDataBytype(dictType);
+    }
 }

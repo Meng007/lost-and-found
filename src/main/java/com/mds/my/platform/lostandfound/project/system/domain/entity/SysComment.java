@@ -95,5 +95,5 @@ public class SysComment {
 
     public static final String COL_IS_DELETE = "is_delete";
 
-    public static final String COL_ STATUS = " status";
+    public static final String COL_STATUS = "status";
 }

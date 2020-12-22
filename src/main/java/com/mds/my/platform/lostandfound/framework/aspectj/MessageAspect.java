@@ -21,6 +21,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +46,16 @@ import java.util.concurrent.CompletableFuture;
 public class MessageAspect {
     @Value("mds.goods.message.url")
     private String url = "http://127.0.0.1:8080/goods/info?goodsId=";
+    @Autowired
+    TokenService tokenService;
+    @Autowired
+    SysGoodsMapper sysGoodsMapper;
+    @Autowired
+    GoodsMessageMapper goodsMessageMapper;
+    @Autowired
+    SysMessageMapper sysMessageMapper;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
     /**
      * 配置切入点
      */
@@ -78,11 +89,12 @@ public class MessageAspect {
         if (Objects.isNull(message)){
             return ;
         }
+        System.out.println("============消息切面开始=================");
         //创建消息对象
         SysMessage sysMessage = new SysMessage();
         //给消息对象赋值
         setMessage(sysMessage,joinPoint);
-
+        System.out.println("====================消息切面结束=======================");
     }
 
     /**
@@ -93,10 +105,14 @@ public class MessageAspect {
     private void setMessage(SysMessage sysMessage, JoinPoint joinPoint) {
         Message message = getAnnotation(joinPoint);
         String type = message.type();
+        System.out.println("======type======");
+        System.out.println(type);
         if (StringUtils.isEmpty(type)){
+            System.out.println("kong");
             return;
         }
         sysMessage.setType(type.trim());
+        System.out.println("--------进坑----------");
         switch (type){
             //物品留言
             case "goodsMessage": saveGoodsMessage(sysMessage);
@@ -130,20 +146,15 @@ public class MessageAspect {
      * @param sysMessage
      */
     private void saveGoodsMessage(SysMessage sysMessage) {
+        System.out.println("===========开始入口===========");
         //获取请求消息
-        HttpServletRequest request = ServletUtils.getRequest();
-        //获取spring容器里的 TokenService 对象 ====>>> 获取当前操作的用户
-        TokenService token = SpringBeanUtils.getBean(TokenService.class);
-        //获取spring容器里的 SysGoodsMapper 对象 ====>> 获取留言的物品
-        SysGoodsMapper goodsMapper = SpringBeanUtils.getBean(SysGoodsMapper.class);
-        //获取spring容器里的 GoodsMessageMapper 对象 ===>>> 获取物品下的留言
-        GoodsMessageMapper goodsMessageMapper = SpringBeanUtils.getBean(GoodsMessageMapper.class);
-        //获取spring容器里的 SysMessageMapper 对象 ==>> 用来保存消息
-        SysMessageMapper sysMessageMapper = SpringBeanUtils.getBean(SysMessageMapper.class);
+        //HttpServletRequest request = ServletUtils.getRequest();
+        System.out.println("===========开始结束===========");
         //请求的参数
         GoodsMessage goodsMessage = null;
+        System.out.println("===========创建消息===========");
         try {
-            goodsMessage = getRequestBean(request, GoodsMessage.class);
+            goodsMessage = getRequestBean(httpServletRequest, GoodsMessage.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,19 +165,19 @@ public class MessageAspect {
             return;
         }
         //获取留言物品
-        SysGoods sysGoods = goodsMapper.selectById(goodsMessage.getGoodsId());
+        SysGoods sysGoods = sysGoodsMapper.selectById(goodsMessage.getGoodsId());
         //赋值
         //创建时间
         sysMessage.setCreateTime(new Timestamp(System.currentTimeMillis()));
         //创建用户，消息的发起者
-        sysMessage.setCreateUser(token.getLoginUser(ServletUtils.getRequest()).getUser().getId());
+        sysMessage.setCreateUser(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
         //设置 已读(0) 未读(1) 状态
         sysMessage.setStatus(1);
         //设置删除状态 删除(1) 未删除(0)
         sysMessage.setIsDelete(0);
-
+        System.out.println("=========准备发送消息===========");
         if (goodsMessage.getMessageId() ==null || goodsMessage.getMessageId() ==0){
-            content = "你的发布的物品【"+sysGoods.getGoodsTitle()+"】被["+token.getLoginUser(request).getUsername()+"]留言，点击[<a href='"+ url+goodsMessage.getGoodsId()+"'>我要查看看</a>]即可查看";
+            content = "你的发布的物品【"+sysGoods.getGoodsTitle()+"】被["+tokenService.getLoginUser(httpServletRequest).getUsername()+"]留言，点击[<a href='"+ url+goodsMessage.getGoodsId()+"'>我要查看看</a>]即可查看";
             //消息内容
             sysMessage.setMessage(content);
             //接受用户
@@ -174,12 +185,13 @@ public class MessageAspect {
         }else {
             //获取留言的消息
             GoodsMessage goodsMessage1 = goodsMessageMapper.selectById(goodsMessage.getMessageId());
-            content = "你在物品【"+sysGoods.getGoodsTitle()+"】的留言被["+token.getLoginUser(request).getUsername()+"]用户回复，点击[<a href='"+ url+goodsMessage.getGoodsId()+"'>我要查看看</a>]即可查看";
+            content = "你在物品【"+sysGoods.getGoodsTitle()+"】的留言被["+tokenService.getLoginUser(httpServletRequest).getUsername()+"]用户回复，点击[<a href='"+ url+goodsMessage.getGoodsId()+"'>我要查看看</a>]即可查看";
             //消息内容
             sysMessage.setMessage(content);
             //接受用户
             sysMessage.setUserId(goodsMessage1.getUserId());
         }
+        System.out.println("==========发送消息=======");
         //保存消息
         sysMessageMapper.insert(sysMessage);
     }

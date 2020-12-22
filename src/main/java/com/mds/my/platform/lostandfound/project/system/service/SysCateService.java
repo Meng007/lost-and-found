@@ -30,8 +30,16 @@ public interface SysCateService extends IService<SysCate> {
 
     /**
      * 获取物品分类
+     * @param pid
      * @return pid
      */
     Result getGoodsCateList(Integer pid);
+
+    /**
+     * 删除分类
+     * @param id
+     * @return
+     */
+    Result removeCate(Integer id);
 }
 

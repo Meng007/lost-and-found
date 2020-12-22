@@ -123,6 +123,16 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
         return Result.fail("删除失败!");
     }
 
+    @Override
+    public Result getGoodsInfo(Integer id) {
+        SysGoods sysGoods = sysGoodsMapper.selectById(id);
+        if (Objects.isNull(sysGoods)){
+            return Result.fail("物品不存在！");
+        }
+
+        return Result.success("获取物品详情成功！",sysGoods);
+    }
+
     /**
      * 铭感词检测
      * @param goodsDTO 物品详情

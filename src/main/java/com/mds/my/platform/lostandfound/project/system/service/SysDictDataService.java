@@ -19,4 +19,6 @@ public interface SysDictDataService extends IService<SysDictData>{
     Result updateDictData(SysDictData sysDictData);
 
     Result getDictDataByType(Integer type);
+
+    Result getDictDataBytype(String dictType);
 }

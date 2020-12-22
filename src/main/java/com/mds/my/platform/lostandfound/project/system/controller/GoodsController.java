@@ -84,4 +84,13 @@ public class GoodsController {
     public PageResult adminGoodsList(@RequestParam Map params){
         return sysGoodsService.getGoodsList(params);
     }
+
+    /**
+     * 获取物品详情
+     */
+    @GetMapping("/info/{id}")
+    public Result getGoodsInfo(@PathVariable Integer id){
+        return sysGoodsService.getGoodsInfo(id);
+
+    }
 }

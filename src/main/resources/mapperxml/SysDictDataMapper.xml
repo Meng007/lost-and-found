@@ -25,14 +25,14 @@
   <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.DictDataVO">
     select sdd.id,sdd.sort,sdd.dict_label,sdd.dict_value,sdd.create_time,
     sdd.update_time,sdd.status,su.nick_name as createUserName,sdd.status,
-    su1.nick_name as updateUserName,sdy.dict_name as dictTypeName
+    su1.nick_name as updateUserName,sdy.dict_name as dictTypeName,sdd.dict_type
     from sys_dict_data sdd
     left join sys_dict_type sdy on sdy.id = sdd.dict_type
     left join sys_user su on su.id = sdd.create_user
     left join sys_user su1 on su1.id = sdd.update_user
     <where>
        <if test="dictType !=null and dictType !=''">
-         and sdd.dict_type = #{dictType}
+         and sdy.dict_name like concat('%',#{dictType},'%')
        </if>
       <if test = "dictLabel !=null and dictLabel !=''">
         and sdd.dict_label like concat('%',#{dictLabel},'%')
@@ -48,5 +48,12 @@
       </if>
     </where>
     order by sdd.sort desc,sdd.create_time desc
+  </select>
+
+  <!--通过字典类型查找字典数据-->
+  <select id="getDictDataByDictType" resultType="com.mds.my.platform.lostandfound.project.system.domain.entity.SysDictData">
+    SELECT sdd.* FROM sys_dict_data sdd
+    left JOIN sys_dict_type sdt on sdd.dict_type = sdt.id
+    where sdt.dict_type  = #{dictType}
   </select>
 </mapper>

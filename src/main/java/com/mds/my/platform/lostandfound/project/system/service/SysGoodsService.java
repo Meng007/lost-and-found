@@ -47,4 +47,11 @@ public interface SysGoodsService extends IService<SysGoods>{
      * @return
      */
     Result removeGoods(Integer id);
+
+    /**
+     *  获取物品详情
+     * @param id
+     * @return
+     */
+    Result getGoodsInfo(Integer id);
 }

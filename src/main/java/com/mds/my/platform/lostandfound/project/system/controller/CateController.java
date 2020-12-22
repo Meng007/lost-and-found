@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * @author 13557
+ */
 @RestController
 @RequestMapping("/cate")
 public class CateController {
@@ -32,10 +35,15 @@ public class CateController {
     }
 
     /**
-     * 获取物品分类
+     * 获取物品分类或父级分类
      */
     @GetMapping("/goods/list/{pid}")
     public Result goodsCate(@PathVariable Integer pid){
         return sysCateService.getGoodsCateList(pid);
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Integer id){
+        return sysCateService.removeCate(id);
     }
 }

@@ -55,6 +55,8 @@ public class SysCate {
     @TableField(value = "create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
     private Date createTime;
+    @TableField(exist = false)
+    private Boolean click = false;
 
     /**
      * 创建人id

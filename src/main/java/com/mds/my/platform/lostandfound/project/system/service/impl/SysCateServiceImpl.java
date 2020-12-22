@@ -65,6 +65,19 @@ public class SysCateServiceImpl extends ServiceImpl<SysCateMapper, SysCate> impl
         return Result.success("获取物品分类成功！",cates);
     }
 
+    @Override
+    public Result removeCate(Integer id) {
+        SysCate sysCate = sysCateMapper.selectById(id);
+        if (Objects.isNull(sysCate)){
+            return Result.fail("删除失败，该系统分类不存在！");
+        }
+        int i = sysCateMapper.deleteById(id);
+        if (i>0){
+            return Result.success("删除成功！");
+        }
+        return Result.fail("删除失败！");
+    }
+
     private void getChildren(List<CateVO> list, CateVO cateVO) {
         if (Objects.isNull(list) || list.isEmpty()) {
             return;

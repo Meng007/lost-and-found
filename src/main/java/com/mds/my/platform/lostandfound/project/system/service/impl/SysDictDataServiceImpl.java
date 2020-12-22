@@ -107,4 +107,14 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         }
         return Result.success("没有数据！");
     }
+
+    @Override
+    public Result getDictDataBytype(String dictType) {
+        if (StringUtils.isEmpty(dictType)){
+            return Result.fail("dictType为空！");
+        }
+        List<SysDictData> vo = sysDictDataMapper.getDictDataByDictType(dictType);
+        return Result.success("获取数据字典成功！",vo);
+    }
+
 }

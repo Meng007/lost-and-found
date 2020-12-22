@@ -14,4 +14,6 @@ import java.util.Map;
 @Mapper
 public interface SysDictDataMapper extends BaseMapper<SysDictData> {
     List<DictDataVO> findAll(Map<String, Object> params);
+
+    List<SysDictData> getDictDataByDictType(String dictType);
 }
