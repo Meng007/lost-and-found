@@ -8,6 +8,7 @@ import com.mds.my.platform.lostandfound.framework.security.LoginUser;
 import com.mds.my.platform.lostandfound.framework.security.service.LoginService;
 import com.mds.my.platform.lostandfound.framework.security.service.SysPermissionService;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
+import com.mds.my.platform.lostandfound.project.system.domain.dto.UserDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysMenu;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO;
@@ -92,7 +93,8 @@ public class LoginController {
     /**
      * 用户注册
      */
-    public Result reg(@RequestBody SysUser sysUser){
-        return sysUserService.regUser(sysUser);
+    @PostMapping("/reg/user")
+    public Result reg(@RequestBody UserDTO userDTO){
+        return sysUserService.regUser(userDTO);
     }
 }

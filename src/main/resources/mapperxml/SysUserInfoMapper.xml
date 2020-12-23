@@ -11,6 +11,9 @@
     <result column="weixin" jdbcType="VARCHAR" property="weixin" />
     <result column="dormitory" jdbcType="VARCHAR" property="dormitory" />
     <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="last_login" jdbcType="TIMESTAMP" property="lastLogin" />
+    <result column="last_reset" jdbcType="TIMESTAMP" property="lastReset" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->

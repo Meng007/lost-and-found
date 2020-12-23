@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
     * 用户详情表
  * @author 13557
@@ -54,6 +56,36 @@ public class SysUserInfo {
      */
     @TableField(value = "introduce")
     private String introduce;
+
+    /**
+     * 最后一次重置密码时间
+     */
+    @TableField(value = "last_reset")
+    private Date lastReset;
+
+    /**
+     * 最后一次登录时间
+     */
+    @TableField(value = "last_login")
+    private Date lastLogin;
+
+    /**
+     * 最后一次登录时间
+     */
+    @TableField(value = "update_time")
+    private Date updateTime;
+
+    /**
+     * 真实姓名
+     */
+    @TableField(value = "real_name")
+    private String realName;
+
+    /**
+     *  手机号
+     */
+    @TableField(value = "phone")
+    private String phone;
 
     public static final String COL_USER_ID = "user_id";
 

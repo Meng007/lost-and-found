@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.constant.Constants;
+import com.mds.my.platform.lostandfound.common.enums.RoleEnum;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
@@ -13,8 +14,10 @@ import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.redis.RedisService;
 import com.mds.my.platform.lostandfound.framework.security.LoginUser;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
+import com.mds.my.platform.lostandfound.project.system.domain.dto.UserDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUserInfo;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.UserVO;
+import com.mds.my.platform.lostandfound.project.system.mapper.SysRoleMapper;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysUserInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,20 +48,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private TokenService tokenService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     
 
     @Override
-    public Result regUser(SysUser sysUser) {
-        if (Objects.isNull(sysUser)){
+    public Result regUser(UserDTO userDTO) {
+        if (Objects.isNull(userDTO)){
             return Result.fail("提交数据不能为空！");
         }
+        //系统用户信息赋值
+        SysUser sysUser = new SysUser();
+        sysUser.setPassword(userDTO.getPassword());
+        sysUser.setUsername(userDTO.getUsername());
+        sysUser.setSex(userDTO.getSex());
+        sysUser.setNickName(userDTO.getNickName());
+
         if (StringUtils.isEmpty(sysUser.getUsername())){
             return Result.fail("用户名不能为空！");
         }
         LambdaQueryWrapper<SysUser> lqm = new LambdaQueryWrapper<>();
         lqm.eq(SysUser::getUsername,sysUser.getUsername());
         SysUser one = sysUserMapper.selectOne(lqm);
-        if (Objects.isNull(one)){
+        if (!Objects.isNull(one)){
             return Result.fail("用户已存在！");
         }
         if (StringUtils.isEmpty(sysUser.getPassword())){
@@ -65,10 +78,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         //加密
         sysUser.setPassword(bCryptPasswordEncoder.encode(sysUser.getPassword()));
+        sysUser.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        sysUser.setIsDelete(0);
+        sysUser.setStatus(1);
+        sysUser.setUserType(2);
         int i = sysUserMapper.insert(sysUser);
+        //给用户默认角色
+        Integer r = sysRoleMapper.setUserRole(sysUser.getId(), RoleEnum.STUDENT.getCode());
         if (i>0){
-            //创建详情表
+            //创建系统用户详情数据赋值
             SysUserInfo info = new SysUserInfo();
+            info.setPhone(userDTO.getPhone());
+            info.setEmail(userDTO.getEmail());
+            info.setDormitory(userDTO.getDormitory());
+            info.setQq(userDTO.getQq());
+            info.setWeixin(userDTO.getWeixin());
+            info.setIntroduce(userDTO.getIntroduce());
+            info.setSchool(userDTO.getSchool());
+            info.setRealName(userDTO.getRealName());
             info.setUserId(sysUser.getId());
             int j = sysUserInfoMapper.insert(info);
             if (j>0){

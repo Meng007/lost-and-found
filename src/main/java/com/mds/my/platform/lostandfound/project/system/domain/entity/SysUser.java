@@ -19,7 +19,7 @@ public class SysUser {
     /**
      * 用户id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -78,6 +78,12 @@ public class SysUser {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
     private Date updateTime;
 
+    /**
+     * 用户性别
+     */
+    @TableField(value = "sex")
+    private Integer sex;
+
     public static final String COL_ID = "id";
 
     public static final String COL_USERNAME = "username";
@@ -97,4 +103,6 @@ public class SysUser {
     public static final String COL_CREATE_TIME = "create_time";
 
     public static final String COL_UPDATE_TIME = "update_time";
+
+    public static final String COL_SEX = "sex";
 }
