@@ -4,6 +4,7 @@ import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.UserDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public interface SysUserService extends IService<SysUser>{
      * @param sysUser
      * @return
      */
-    Result updatePassword(SysUser sysUser);
+    Result updatePassword(UserDTO userDTO);
 
     /**
      * 用户列表
@@ -46,4 +47,8 @@ public interface SysUserService extends IService<SysUser>{
      * @return
      */
     PageResult getLoginUserList(Map<String, Object> params);
+
+    Result updateAvatar(MultipartFile multipartFile);
+
+    Result updateUserInfo(UserDTO userDTO);
 }

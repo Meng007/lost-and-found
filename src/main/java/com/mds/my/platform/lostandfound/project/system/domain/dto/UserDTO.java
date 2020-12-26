@@ -22,6 +22,8 @@ public class UserDTO {
     private String nickName;
     private String realName;
     private String confirmPassword;
+
+    private String oldPassword;
 }
 
 

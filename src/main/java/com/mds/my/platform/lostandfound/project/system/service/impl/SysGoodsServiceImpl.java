@@ -81,11 +81,9 @@ public class SysGoodsServiceImpl extends ServiceImpl<SysGoodsMapper, SysGoods> i
      */
     @Override
     public PageResult getGoodsListByUserId(Map params) {
-        if (StringUtils.isEmpty((String)params.get(USER_ID))){
-            return PageResult.builder().code(ResultCode.NO_ID.getCode()).msg("id不能为空！").data(null).build();
-        }
+        params.put("userId",tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
         List<GoodsVO> vo =  sysGoodsMapper.getMyGoodsList(params);
-        return PageResult.<GoodsVO>builder().msg("获取的的物品列表成功！").data(vo).build();
+        return PageResult.<GoodsVO>builder().code(200).msg("获取的的物品列表成功！").data(vo).build();
     }
 
     /**

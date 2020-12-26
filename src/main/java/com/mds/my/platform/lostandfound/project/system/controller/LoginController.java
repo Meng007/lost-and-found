@@ -1,5 +1,6 @@
 package com.mds.my.platform.lostandfound.project.system.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mds.my.platform.lostandfound.common.constant.Constants;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.web.Result;
@@ -70,7 +71,10 @@ public class LoginController {
         // 权限集合
         Set<String> permissions = sysPermissionService.getMenuPermission(user);
         Map<String, Object> result = new HashMap<>(3);
-        result.put("user", user);
+        LambdaQueryWrapper<SysUser> lab = new LambdaQueryWrapper<>();
+        lab.eq(SysUser::getId,user.getId());
+        SysUser one = sysUserService.getOne(lab);
+        result.put("user", one);
         result.put("roles", roles);
         result.put("permissions", permissions);
         return Result.success("获取用户信息成功！", result);

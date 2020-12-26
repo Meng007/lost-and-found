@@ -9,8 +9,11 @@ import com.mds.my.platform.lostandfound.common.enums.RoleEnum;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
+import com.mds.my.platform.lostandfound.common.utils.file.FileUploadUtils;
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
+import com.mds.my.platform.lostandfound.framework.config.ServerConfig;
+import com.mds.my.platform.lostandfound.framework.config.SystemParamsConfig;
 import com.mds.my.platform.lostandfound.framework.redis.RedisService;
 import com.mds.my.platform.lostandfound.framework.security.LoginUser;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
@@ -25,6 +28,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -32,6 +36,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mds.my.platform.lostandfound.project.system.mapper.SysUserMapper;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.service.SysUserService;
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * @author 13557
  */
@@ -50,6 +56,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private RedisService redisService;
     @Autowired
     private SysRoleMapper sysRoleMapper;
+    @Autowired
+    private ServerConfig serverConfig;
     
 
     @Override
@@ -106,23 +114,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public Result updatePassword(SysUser sysUser) {
-        if (Objects.isNull(sysUser)){
+    public Result updatePassword(UserDTO userDTO) {
+        if (Objects.isNull(userDTO)){
             return Result.fail("提交数据不能为空！");
         }
-        if (Objects.isNull(sysUser.getId())){
-            return Result.fail("用户id不能为空！");
-        }
-        SysUser one = sysUserMapper.selectById(sysUser.getId());
+        SysUser one = sysUserMapper.selectById(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
         if (Objects.isNull(one)){
             return Result.fail("用户不存在！");
         }
-        if (StringUtils.isEmpty(sysUser.getPassword())){
+        if (StringUtils.isNotEmpty(userDTO.getOldPassword())){
+            return Result.fail("旧密码不能为空！");
+        }
+        if (StringUtils.isEmpty(userDTO.getPassword())){
             return Result.fail("新密码不能为空！");
         }
-        one.setPassword(bCryptPasswordEncoder.encode(sysUser.getPassword()));
-        int i = sysUserMapper.updateById(one);
+        if (!one.getPassword().equals(bCryptPasswordEncoder.encode(userDTO.getOldPassword()))) {
+            return Result.fail("旧密码和原密码不一致！");
+        }
+        SysUser user = new SysUser();
+        user.setId(one.getId());
+        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+        int i = sysUserMapper.updateById(user);
         if (i>0){
+            LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+            loginUser.getUser().setPassword(user.getPassword());
+            tokenService.delLoginUser(loginUser.getToken());
+            tokenService.setLoginUser(loginUser);
             return Result.success("修改密码成功！");
         }
         return Result.fail("修改密码失败！");
@@ -186,5 +203,61 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         PageInfo<LoginUser> info = new PageInfo<>(list);
         return PageResult.<LoginUser>builder().code(200).data(info.getList()).msg("无数据！").total(info.getTotal()).build();
+    }
+
+    @Override
+    public Result updateAvatar(MultipartFile multipartFile) {
+        String filePath = SystemParamsConfig.getUploadPath();
+        try {
+            Map<String,Object> result = new HashMap<>(2);
+            String fileName = FileUploadUtils.upload(filePath,multipartFile);
+            String fileUrl = serverConfig.getUrl() + fileName;
+            result.put("fileName",fileName);
+            result.put("fileUrl",fileUrl);
+            SysUser sysUser = new SysUser();
+            sysUser.setId(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
+            sysUser.setAvatar(fileUrl);
+            //
+            LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+            loginUser.getUser().setAvatar(fileUrl);
+            tokenService.delLoginUser(loginUser.getToken());
+            tokenService.setLoginUser(loginUser);
+            int i = sysUserMapper.updateById(sysUser);
+            if (i>0){
+                return Result.success("头像修改成功！",result);
+            }
+            return Result.fail("头像修改失败！",result);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Result.fail("文件上传失败！");
+        }
+    }
+
+    @Override
+    public Result updateUserInfo(UserDTO userDTO) {
+
+        //系统用户信息赋值
+        SysUser sysUser = new SysUser();
+        sysUser.setId(tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId());
+        sysUser.setSex(userDTO.getSex());
+        sysUser.setNickName(userDTO.getNickName());
+        if (!Objects.isNull(sysUser.getSex()) || StringUtils.isNotEmpty(sysUser.getNickName())){
+            int i = sysUserMapper.updateById(sysUser);
+        }
+
+        SysUserInfo info = new SysUserInfo();
+        info.setPhone(userDTO.getPhone());
+        info.setEmail(userDTO.getEmail());
+        info.setDormitory(userDTO.getDormitory());
+        info.setQq(userDTO.getQq());
+        info.setWeixin(userDTO.getWeixin());
+        info.setIntroduce(userDTO.getIntroduce());
+        info.setSchool(userDTO.getSchool());
+        info.setRealName(userDTO.getRealName());
+        info.setUserId(sysUser.getId());
+        int i1 = sysUserInfoMapper.updateById(info);
+
+        return Result.success("修改用户信息成功！");
     }
 }

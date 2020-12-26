@@ -2,11 +2,14 @@ package com.mds.my.platform.lostandfound.project.system.controller;
 
 import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.common.web.Result;
+import com.mds.my.platform.lostandfound.framework.config.SystemParamsConfig;
+import com.mds.my.platform.lostandfound.project.system.domain.dto.UserDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.service.SysUserInfoService;
 import com.mds.my.platform.lostandfound.project.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -24,10 +27,9 @@ public class UserController {
     /**
      *  修改密码
      */
-    @PutMapping("/update/password/{id}")
-    public Result updatePassword(@RequestBody SysUser sysUser, @PathVariable Integer id){
-        sysUser.setId(id);
-        return sysUserService.updatePassword(sysUser);
+    @PutMapping("/update/password")
+    public Result updatePassword(@RequestBody UserDTO userDTO){
+        return sysUserService.updatePassword(userDTO);
     }
     /**
      * 获取用户信息
@@ -40,6 +42,11 @@ public class UserController {
     /**
      * 修改用户头像
      */
+    @PostMapping("/avatar")
+    public Result updateAvatar(@RequestParam("file") MultipartFile multipartFile){
+        return sysUserService.updateAvatar(multipartFile);
+    }
+
 
     /**
      * 获取用户列表
@@ -63,6 +70,11 @@ public class UserController {
     @GetMapping("/login/list")
     public PageResult loginList(@RequestParam Map<String,Object> params){
         return sysUserService.getLoginUserList(params);
+    }
+
+    @PutMapping("/update")
+    public Result update( @RequestBody UserDTO userDTO){
+        return sysUserService.updateUserInfo(userDTO);
     }
 
 

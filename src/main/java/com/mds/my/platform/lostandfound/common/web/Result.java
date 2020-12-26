@@ -79,6 +79,9 @@ public class Result <T>{
         return fail(500,msg,null);
     }
 
+    public static <T> Result<T> fail(Integer code,String msg){
+        return fail(code,msg,null);
+    }
 
 
 }

@@ -41,6 +41,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
             //从redis中删除用户
             tokenService.delLoginUser(loginUser.getToken());
         }
-        ServletUtils.renderString(response, JSON.toJSONString(Result.fail(HttpStatus.OK.value(), "退出成功",null)));
+
+        ServletUtils.renderString(response, JSON.toJSONString(Result.success(HttpStatus.OK.value(), "退出成功",null)));
     }
 }

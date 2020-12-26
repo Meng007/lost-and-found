@@ -7,6 +7,7 @@ import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.GoodsDTO;
 import com.mds.my.platform.lostandfound.project.system.service.SensitiveWordService;
 import com.mds.my.platform.lostandfound.project.system.service.SysGoodsService;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -52,12 +53,12 @@ public class GoodsController {
     /**
      *  我的物品列表
      * @param params
-     * @param id
+     * @param params
      * @return
      */
-    @GetMapping("/my-list/{id}")
-    public PageResult myGoods(@RequestParam Map params ,@PathVariable Integer id){
-        params.put("userId",id);
+    @GetMapping("/my-list")
+    public PageResult myGoods(@RequestParam Map<String,Object> params){
+
         return sysGoodsService.getGoodsListByUserId(params);
     }
 
@@ -92,5 +93,13 @@ public class GoodsController {
     public Result getGoodsInfo(@PathVariable Integer id){
         return sysGoodsService.getGoodsInfo(id);
 
+    }
+
+    /**
+     * 物品搜索
+     */
+    @GetMapping("/search")
+    public PageResult search(@RequestParam Map<String,Object> params){
+        return sysGoodsService.getGoodsList(params);
     }
 }
