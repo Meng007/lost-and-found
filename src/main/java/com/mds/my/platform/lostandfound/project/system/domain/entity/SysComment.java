@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
     * 留言
-    */
+ * @author 13557
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,6 +66,7 @@ public class SysComment {
      * 发布日期
      */
     @TableField(value = "create_time")
+    @JsonFormat(pattern = "yyy-MM-dd HH:mm",timezone = "GMT+8")
     private Date createTime;
 
     /**
@@ -74,7 +78,7 @@ public class SysComment {
     /**
      * 状态 1 正常
      */
-    @TableField(value = "` status`")
+    @TableField(value = "`status`")
     private Integer status;
 
     public static final String COL_ID = "id";
