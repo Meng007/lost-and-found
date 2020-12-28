@@ -15,7 +15,7 @@
 
     <!--获取留言标签-->
     <select id="getMessageTags" resultType="com.mds.my.platform.lostandfound.project.system.domain.dto.MessageTagDTO">
-        SELECT sc.cate_name as tagName,st.id as tagId
+        SELECT sc.cate_name as tagName,st.id
         FROM sys_comm_tag st
         LEFT JOIN sys_cate sc on sc.id = st.tag_id
         WHERE st.comment_id = #{id}

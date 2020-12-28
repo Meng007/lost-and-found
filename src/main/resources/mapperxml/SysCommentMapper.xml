@@ -48,6 +48,7 @@
   <!--获取留言列表-->
   <select id="findMyAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.CommentVO">
     select <include refid="Base_Column_List"></include>
+    from sys_comment t
     <where>
       <if test="comment !=null and comment !=''">
         and t.comment like concat('%',#{comment},'%')
