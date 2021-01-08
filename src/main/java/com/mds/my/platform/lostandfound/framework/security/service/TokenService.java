@@ -98,9 +98,7 @@ public class TokenService {
             String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
             String userKey = getTokenKey(uuid);
             String userStr = (String) redisService.get(userKey);
-            System.out.println("redis中用户字符串：" + userStr);
             LoginUser user = JSONObject.parseObject(userStr, LoginUser.class);
-            System.out.println("str转换成Obj:" + user);
             return user;
         }
         return null;

@@ -34,5 +34,7 @@ public interface GoodsMessageService extends IService<GoodsMessage> {
      * @return
      */
     Result removeMessage(Integer messageId, Integer userId);
+
+    Result saveComm(GoodsMessage goodsMessage);
 }
 

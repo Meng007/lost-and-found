@@ -72,7 +72,7 @@ public class MessageAspect {
     @AfterReturning(pointcut = "messagePointCut()", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Object jsonResult) {
         CompletableFuture.runAsync(() ->{
-            handleMessage(joinPoint, null, jsonResult);
+            //handleMessage(joinPoint, null, jsonResult);
         });
 
     }
@@ -149,6 +149,11 @@ public class MessageAspect {
         System.out.println("===========开始入口===========");
         //获取请求消息
         //HttpServletRequest request = ServletUtils.getRequest();
+        try {
+            System.out.println("请求对象："+httpServletRequest.getParameter("messageContent"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         System.out.println("===========开始结束===========");
         //请求的参数
         GoodsMessage goodsMessage = null;

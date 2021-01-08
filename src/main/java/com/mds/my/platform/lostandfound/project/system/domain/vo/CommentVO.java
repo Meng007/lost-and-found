@@ -19,4 +19,5 @@ public class CommentVO extends SysComment {
     private String avatar;
     private List<String> preview;
     private Boolean isHasImage;
+    private Boolean isAgree;
 }

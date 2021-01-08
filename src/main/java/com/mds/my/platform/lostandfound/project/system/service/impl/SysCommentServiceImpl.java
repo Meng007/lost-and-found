@@ -9,13 +9,9 @@ import com.mds.my.platform.lostandfound.common.web.Result;
 import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.MessageDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.MessageTagDTO;
-import com.mds.my.platform.lostandfound.project.system.domain.entity.SysCate;
-import com.mds.my.platform.lostandfound.project.system.domain.entity.SysCommImage;
-import com.mds.my.platform.lostandfound.project.system.domain.entity.SysCommTag;
+import com.mds.my.platform.lostandfound.project.system.domain.entity.*;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.CommentVO;
-import com.mds.my.platform.lostandfound.project.system.mapper.SysCateMapper;
-import com.mds.my.platform.lostandfound.project.system.mapper.SysCommImageMapper;
-import com.mds.my.platform.lostandfound.project.system.mapper.SysCommTagMapper;
+import com.mds.my.platform.lostandfound.project.system.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +25,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mds.my.platform.lostandfound.project.system.domain.entity.SysComment;
-import com.mds.my.platform.lostandfound.project.system.mapper.SysCommentMapper;
 import com.mds.my.platform.lostandfound.project.system.service.SysCommentService;
 import sun.awt.AWTAccessor;
 
@@ -50,6 +44,8 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComm
     private SysCommTagMapper sysCommTagMapper;
     @Autowired
     private SysCommImageMapper sysCommImageMapper;
+    @Autowired
+    private GoodsMessageAgreeMapper goodsMessageAgreeMapper;
     @Override
     public Result saveMessage(MessageDTO messageDTO) {
         if (Objects.isNull(messageDTO)){
@@ -120,9 +116,16 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComm
 
     @Override
     public PageResult findAll(Map<String, Object> params) {
+        Integer userId = null;
+        try {
+            userId = tokenService.getLoginUser(ServletUtils.getRequest()).getUser().getId();
+        }catch (Exception e){
+            log.error("未登录");
+        }
         StartPageUtils.startPage(params);
         List<CommentVO> vo = sysCommentMapper.findAll(params);
         if (!Objects.isNull(vo) && !vo.isEmpty()){
+            Integer finalUserId = userId;
             vo.forEach(val ->{
                 //标签
                 List<MessageTagDTO> tags = sysCommTagMapper.getMessageTags(val.getId());
@@ -139,6 +142,26 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComm
                     val.setPreview(preview);
                 }
                 val.setImages(images);
+                //流浪量
+                SysComment comm = new SysComment();
+                comm.setId(val.getId());
+                comm.setViews(val.getViews() + 1);
+                sysCommentMapper.updateById(comm);
+                //是否点赞
+                if (Objects.isNull(finalUserId)){
+                    val.setIsAgree(false);
+                }else {
+                    LambdaQueryWrapper<GoodsMessageAgree> lqm = new LambdaQueryWrapper<>();
+                    lqm.eq(GoodsMessageAgree::getMessageId,val.getId()).eq(GoodsMessageAgree::getUserId,finalUserId);
+                    GoodsMessageAgree agr = goodsMessageAgreeMapper.selectOne(lqm);
+                    if (Objects.isNull(agr)){
+                        //没有点赞
+                        val.setIsAgree(false);
+                    }else {
+                        //点赞
+                        val.setIsAgree(true);
+                    }
+                }
             });
         }
         PageInfo<CommentVO> info = new PageInfo<>(vo);

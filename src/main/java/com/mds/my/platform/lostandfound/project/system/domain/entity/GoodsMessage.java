@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mds.my.platform.lostandfound.common.web.Result;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -74,6 +75,18 @@ public class GoodsMessage {
     @TableField(value = "is_delete")
     private Integer isDelete;
 
+    /**
+     *  留言类型
+     */
+    @TableField(value = "message_type")
+    private String messageType;
+
+    /**
+     * 根
+     */
+    @TableField(value = "root")
+    private Integer root;
+
     public static final String COL_ID = "id";
 
     public static final String COL_MESSAGE_ID = "message_id";
@@ -91,4 +104,6 @@ public class GoodsMessage {
     public static final String COL_MESSAGE_CONTENT = "message_content";
 
     public static final String COL_IS_DELETE = "is_delete";
+
+
 }

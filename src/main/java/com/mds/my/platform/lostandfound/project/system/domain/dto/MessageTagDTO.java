@@ -9,4 +9,5 @@ import lombok.Data;
 public class MessageTagDTO {
     private Integer id;
     private String TagName;
+    private Boolean isAgree;
 }
