@@ -44,4 +44,14 @@ public class GoodsMessageController {
     public Result remove(@PathVariable Integer messageId,@PathVariable Integer userId){
         return goodsMessageService.removeMessage(messageId,userId);
     }
+
+    /**
+     *  获取武平留言
+     */
+
+    @GetMapping("/msg/{id}")
+    public PageResult commentList(@PathVariable Integer id,@RequestParam Map<String,Object> params){
+        params.put("goodsId",id);
+        return goodsMessageService.getGoodsComment(params);
+    }
 }

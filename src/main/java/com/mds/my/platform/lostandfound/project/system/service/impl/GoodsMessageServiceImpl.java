@@ -1,5 +1,6 @@
 package com.mds.my.platform.lostandfound.project.system.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.utils.StartPageUtils;
@@ -15,10 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mds.my.platform.lostandfound.project.system.mapper.GoodsMessageMapper;
@@ -57,6 +55,7 @@ public class GoodsMessageServiceImpl extends ServiceImpl<GoodsMessageMapper, Goo
             return Result.fail("物品不存在");
         }
         goodsMessage.setMessageType("goods");
+        goodsMessage.setCreateTime(new Timestamp(System.currentTimeMillis()));
         goodsMessage.setUserId(user.getId());
         goodsMessage.setIsDelete(0);
         goodsMessage.setStatus(1);
@@ -137,32 +136,47 @@ public class GoodsMessageServiceImpl extends ServiceImpl<GoodsMessageMapper, Goo
         return Result.fail("留言失败！");
     }
 
-    private void getParentMessage(List<GoodsMessageVO> vo, int i) {
-        //父
-        List<GoodsMessageVO> tem = new ArrayList<>();
-        if (Objects.isNull(vo) || vo.isEmpty()){
-            return;
-        }
-        vo.forEach(val ->{
-            if (val.getMessageId() == i){
-                tem.add(val);
-            }
-        });
-        // 子
-        if (!Objects.isNull(tem) && tem.isEmpty()){
-            tem.forEach(val ->{
-                getParentMessage(vo,val);
+    @Override
+    public PageResult getGoodsComment(Map<String, Object> params) {
+        StartPageUtils.startPage(params);
+        params.put("type","goods");
+        params.put("root",0);
+        List<GoodsMessageVO> vo =  goodsMessageMapper.findGoodsComment(params);
+        if (!Objects.isNull(vo) && !vo.isEmpty()){
+            vo.forEach(val ->{
+                Map<String,Object> par = new HashMap<>();
+                par.put("goodsId",params.get("goodsId"));
+                par.put("type","goods");
+                par.put("root",val.getId());
+                //子留言
+                List<GoodsMessageVO> ch =  goodsMessageMapper.findGoodsComment(par);
+                if (!Objects.isNull(ch) && !ch.isEmpty()){
+                    ch.forEach(chVal ->{
+                        resetComment(ch,chVal);
+                    });
+                }
+                PageInfo<GoodsMessageVO> chInfo = new PageInfo<>(ch);
+                PageResult chP= PageResult.<GoodsMessageVO>builder()
+                        .total(chInfo.getTotal())
+                        .data(chInfo.getList())
+                        .build();
+                val.setCh(chP);
             });
         }
+        PageInfo<GoodsMessageVO> info = new PageInfo<>(vo);
+        return PageResult.<GoodsMessageVO>builder()
+                .total(info.getTotal())
+                .data(info.getList())
+                .build();
     }
-    private void getParentMessage(List<GoodsMessageVO> vo,GoodsMessageVO goodsMessageVO){
-        List<GoodsMessageVO> ch = new ArrayList<>();
-        vo.forEach(val ->{
-            if (val.getMessageId().equals(goodsMessageVO.getId())){
-                ch.add(val);
+
+    private void resetComment(List<GoodsMessageVO> ch, GoodsMessageVO chVal) {
+        ch.forEach(val ->{
+            if (val.getMessageId().equals(chVal.getId())){
+                String s = " 回复@"+chVal.getNickName() +" : ";
+                val.setMessageContent(s+val.getMessageContent());
             }
         });
-        goodsMessageVO.setCh(ch);
     }
 
     /**

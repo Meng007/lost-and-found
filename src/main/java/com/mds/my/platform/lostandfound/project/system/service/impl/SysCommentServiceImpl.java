@@ -11,17 +11,16 @@ import com.mds.my.platform.lostandfound.project.system.domain.dto.MessageDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.dto.MessageTagDTO;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.*;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.CommentVO;
+import com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsMessageVO;
 import com.mds.my.platform.lostandfound.project.system.mapper.*;
+import com.mds.my.platform.lostandfound.project.system.service.GoodsMessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.ObjectStreamClass;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -46,6 +45,8 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComm
     private SysCommImageMapper sysCommImageMapper;
     @Autowired
     private GoodsMessageAgreeMapper goodsMessageAgreeMapper;
+    @Autowired
+    private GoodsMessageMapper goodsMessageMapper;
     @Override
     public Result saveMessage(MessageDTO messageDTO) {
         if (Objects.isNull(messageDTO)){
@@ -162,12 +163,44 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper, SysComm
                         val.setIsAgree(true);
                     }
                 }
+                //获取回复
+                Map<String,Object> par = new HashMap<>();
+                par.put("type","comment");
+                par.put("goodsId",val.getId());
+                par.put("root",'0');
+                par.put("messageId",'0');
+                List<GoodsMessageVO> commVo = goodsMessageMapper.findGoodsComment(par);
+                if(!Objects.isNull(commVo) && !commVo.isEmpty()){
+                    commVo.forEach(commvo ->{
+                        Map<String,Object> par2 = new HashMap<>();
+                        par2.put("type","comment");
+                        par2.put("goodsId",val.getId());
+                        par2.put("root",commvo.getId());
+                        par2.put("messageId",commvo.getId());
+                        List<GoodsMessageVO> commVo2 = goodsMessageMapper.findGoodsComment(par2);
+                        if (!Objects.isNull(commVo2) && !commVo2.isEmpty()){
+                            commVo2.forEach(ch ->{
+                                resetComment(commVo2,ch);
+                            });
+                        }
+                        PageInfo<GoodsMessageVO> chInfo = new PageInfo<>(commVo2);
+                        commvo.setCh(PageResult.<GoodsMessageVO>builder().data(chInfo.getList()).total(chInfo.getTotal()).build());
+                    });
+                }
+                val.setMessages(commVo);
             });
         }
         PageInfo<CommentVO> info = new PageInfo<>(vo);
         return PageResult.<CommentVO>builder().code(200).total(info.getTotal()).data(info.getList()).msg("获取留言超过！").build();
     }
-
+    private void resetComment(List<GoodsMessageVO> ch, GoodsMessageVO chVal) {
+        ch.forEach(val ->{
+            if (val.getMessageId().equals(chVal.getId())){
+                String s = " 回复@"+chVal.getNickName() +" : ";
+                val.setMessageContent(s+val.getMessageContent());
+            }
+        });
+    }
     @Override
     public PageResult findMyAll(Map<String, Object> params) {
         StartPageUtils.startPage(params);

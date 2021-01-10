@@ -20,4 +20,5 @@ public class CommentVO extends SysComment {
     private List<String> preview;
     private Boolean isHasImage;
     private Boolean isAgree;
+    private List<GoodsMessageVO> messages;
 }

@@ -16,8 +16,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, message_id, user_id, create_time, goods_id, `status`, agree, message_content, 
-    is_delete
+    t.id, t.message_id, t.user_id, t.create_time, t.goods_id, t.`status`, t.agree, t.message_content,
+    t.is_delete
   </sql>
   <!--获取物品留言-->
   <select id="messageList" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsMessageVO">
@@ -35,5 +35,29 @@
       and gm.status = 1,and gm.is_delete = 0
     </where>
     order by gm.agree desc,gm.create_time desc
+  </select>
+
+  <!--获取物品留言列表-->
+  <select id="findGoodsComment" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.GoodsMessageVO">
+    select <include refid="Base_Column_List"></include>,
+    su.avatar,su.nick_name
+    from goods_message t
+    left join sys_user su on su.id = t.user_id
+    <where>
+      <if test="goodsId !=null">
+        and t.goods_id = #{goodsId}
+      </if>
+      <if test="root !=null and root !=''">
+        and t.root = #{root}
+      </if>
+      <if test="messageId !=null and messageId !=''">
+        and t.message_id = #{messageId}
+      </if>
+      <if test="type !=null">
+        and t.message_type = #{type}
+      </if>
+      and t.is_delete = 0
+    </where>
+    order by t.create_time desc
   </select>
 </mapper>

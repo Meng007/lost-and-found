@@ -19,4 +19,6 @@ public interface GoodsMessageMapper extends BaseMapper<GoodsMessage> {
      * @return
      */
     List<GoodsMessageVO> messageList(Map<String, Object> params);
+
+    List<GoodsMessageVO> findGoodsComment(Map<String, Object> params);
 }

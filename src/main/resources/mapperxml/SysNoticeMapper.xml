@@ -21,7 +21,43 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, title, cover_image, content, url, `type`, `status`, is_delete, create_time, create_user, 
-    update_time, update_user, views, agree
+    t.id, t.title, t.cover_image, t.content, t.url, t.`type`, t.`status`, t.is_delete, t.create_time, t.create_user,
+    t.update_time, t.update_user, t.views, t.agree
   </sql>
+
+  <!--获取公告列表-->
+  <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.NoticeVO">
+    select <include refid="Base_Column_List"></include>,
+    avatar,nick_name
+    from sys_notice t
+    left join sys_user su on su.id = t.create_user
+    <where>
+      <if test="type !=null and type !=''">
+        and t.type = #{type}
+      </if>
+      <if test="title !=null and title !=''">
+        and t.title like concat('%',#{title},'%')
+      </if>
+      <if test="endTime !=null and endTime !=''">
+        and date_format(#{endTime},'%Y-%m-%d') >=  date_format(t.create_time,'%Y-%m-%d')
+      </if>
+      <if test="beginTime !=null and beginTime !=''">
+        and date_format(t.create_time,'%Y-%m-%d') >= date_format(#{beginTime},'%Y-%m-%d')
+      </if>
+      and t.is_delete = 0
+    </where>
+    order by t.create_time desc
+  </select>
+
+  <!--获取轮播-->
+  <select id="findLb" resultType="com.mds.my.platform.lostandfound.project.system.domain.entity.SysNotice">
+    select <include refid="Base_Column_List"></include>
+    from sys_notice t
+    <where>
+      <if test="type !=null">
+        and t.type = #{type}
+      </if>
+      and t.is_delete = 0
+    </where>
+  </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.mds.my.platform.lostandfound.project.system.domain.vo;
 
+import com.mds.my.platform.lostandfound.common.web.PageResult;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.GoodsMessage;
 import lombok.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class GoodsMessageVO extends GoodsMessage implements Serializable {
     private String avatar;
     private String nickName;
-    List<GoodsMessageVO> ch;
+    //List<GoodsMessageVO> ch;
+    PageResult ch;
 
 }

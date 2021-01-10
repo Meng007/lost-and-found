@@ -36,5 +36,7 @@ public interface GoodsMessageService extends IService<GoodsMessage> {
     Result removeMessage(Integer messageId, Integer userId);
 
     Result saveComm(GoodsMessage goodsMessage);
+
+    PageResult getGoodsComment(Map<String, Object> params);
 }
 
