@@ -7,7 +7,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
     <result column="pid" jdbcType="INTEGER" property="pid" />
-    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="component" jdbcType="VARCHAR" property="component" />
     <result column="is_frame" jdbcType="BOOLEAN" property="isFrame" />
@@ -15,14 +15,14 @@
     <result column="perms" jdbcType="VARCHAR" property="perms" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="user_id" jdbcType="INTEGER" property="usereId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="visible" jdbcType="BOOLEAN" property="visible" />
     <result column="status" jdbcType="BOOLEAN" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, menu_name, pid, `order`, `path`, component, is_frame, menu_type, perms, create_time, 
+    id, menu_name, pid, `sort`, `path`, component, is_frame, menu_type, perms, create_time,
     update_time, user_id, icon, visible, `status`
   </sql>
     <select id="selectMenuMapperPermsByUserId" resultType="java.lang.String">
@@ -35,7 +35,7 @@
     </select>
 
     <select id="selectMenuTreeByUserId" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.SysMenuVO">
-        SELECT distinct sm.id,sm.menu_name,sm.pid,sm.order,sm.path,sm.component,sm.is_frame,sm.menu_type,
+        SELECT distinct sm.id,sm.menu_name,sm.pid,sm.sort,sm.path,sm.component,sm.is_frame,sm.menu_type,
       sm.icon,sm.visible,sm.status
         FROM sys_menu sm
         left join sys_role_menu srm on sm.id = srm.menu_id
@@ -46,15 +46,18 @@
 
   <!--后台获取菜单列表-->
   <select id="findAll" resultType="com.mds.my.platform.lostandfound.project.system.domain.vo.MenuVO">
-    select sm.id,sm.menu_name,sm.pid,sm.order,sm.path,sm.component,
+    select sm.id,sm.menu_name,sm.pid,sm.sort,sm.path,sm.component,
     sm.is_frame,sm.perms,sm.create_time,sm.user_id,sm.icon,sm.visible,
-    sm.status
+    sm.status,sm.menu_type
      from sys_menu sm
      left join sys_user su on su.id = sm.user_id
      <where>
        <if test="menuName !=null and menuName !=''">
          and sm.menu_name like concat('%',#{menuName},'%')
        </if>
+         <if test="menuType !=null and menuType !=''">
+             and sm.menu_type = #{menuType}
+         </if>
      </where>
   </select>
 </mapper>

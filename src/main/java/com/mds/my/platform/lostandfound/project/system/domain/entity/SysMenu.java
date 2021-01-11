@@ -37,8 +37,8 @@ public class SysMenu {
     /**
      * 菜单排序
      */
-    @TableField(value = "order")
-    private Integer order;
+    @TableField(value = "sort")
+    private Integer sort;
 
     /**
      * 路由地址
@@ -56,13 +56,13 @@ public class SysMenu {
      * 是否外链  1：是，0：否
      */
     @TableField(value = "is_frame")
-    private Boolean isFrame;
+    private Integer isFrame;
 
     /**
      * 菜单类型 1：目录，2：菜单 3：按钮
      */
     @TableField(value = "menu_type")
-    private Boolean menuType;
+    private Integer menuType;
 
     /**
      * 权限标识
@@ -100,13 +100,13 @@ public class SysMenu {
      * 是否隐藏 1：隐藏 0：显现
      */
     @TableField(value = "visible")
-    private Boolean visible;
+    private Integer visible;
 
     /**
      * 状态 1：停用，0正常
      */
     @TableField(value = "status")
-    private Boolean status;
+    private Integer status;
 
     public static final String COL_ID = "id";
 

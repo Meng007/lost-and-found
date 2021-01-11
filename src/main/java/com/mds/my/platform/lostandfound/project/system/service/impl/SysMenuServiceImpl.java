@@ -1,10 +1,13 @@
 package com.mds.my.platform.lostandfound.project.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mds.my.platform.lostandfound.common.constant.Constants;
 import com.mds.my.platform.lostandfound.common.enums.UserStatus;
 import com.mds.my.platform.lostandfound.common.exception.BaseException;
 import com.mds.my.platform.lostandfound.common.utils.SecurityUtils;
+import com.mds.my.platform.lostandfound.common.utils.ServletUtils;
 import com.mds.my.platform.lostandfound.common.web.Result;
+import com.mds.my.platform.lostandfound.framework.security.service.TokenService;
 import com.mds.my.platform.lostandfound.project.system.domain.entity.SysUser;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.MenuVO;
 import com.mds.my.platform.lostandfound.project.system.domain.vo.MetaVo;
@@ -32,6 +35,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Autowired
     private SysMenuMapper sysMenuMapper;
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public Collection<? extends String> selectMenuPermsByUserId(Integer id) {
@@ -106,9 +111,20 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         if (StringUtils.isEmpty(sysMenu.getMenuName())){
             throw new BaseException("提交菜单名称不能为空！");
         }
+        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(SysMenu::getMenuName,sysMenu.getMenuName());
+        SysMenu one = sysMenuMapper.selectOne(lqw);
+        if (!Objects.isNull(one)){
+            return Result.fail("菜单名重复！");
+        }
+        SysUser user = tokenService.getLoginUser(ServletUtils.getRequest()).getUser();
         sysMenu.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        sysMenu.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        return null;
+        sysMenu.setUserId(user.getId());
+        int i = sysMenuMapper.insert(sysMenu);
+        if (i>0){
+            return Result.success("添加菜单成功");
+        }
+        return Result.fail("添加菜单失败");
     }
 
     /**
@@ -168,9 +184,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return
      */
     @Override
-    public Result findAll(Map<String, Object> params) {
+    public Result  findAll(Map<String, Object> params) {
         List<MenuVO> list = sysMenuMapper.findAll(params);
+
         if (!Objects.isNull(list) && !list.isEmpty()){
+            //顶级
             List<MenuVO> pList = list.stream().filter(val -> val.getPid() == null || val.getPid() == 0).collect(Collectors.toList());
             if (!Objects.isNull(pList) && !pList.isEmpty()){
                 pList.forEach(val ->{
@@ -185,7 +203,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private void getChildren(List<MenuVO> list, MenuVO vo) {
         List<MenuVO> children = new ArrayList<>();
         list.forEach(val ->{
-            if (val.getPid().equals(val.getId())){
+            if (val.getPid().equals(vo.getId())){
                 children.add(val);
             }
         });
